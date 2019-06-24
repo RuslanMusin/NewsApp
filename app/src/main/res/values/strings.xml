@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NewsApp</string>
+    <string name="news">Новости</string>
+    <string name="chosen">Избранные</string>
+    <string name="error">Ошибка</string>
+
+    <string name="ok">Ок</string>
+    <string name="close">Закрыть</string>
+    <string name="cancel">Отмена</string>
 </resources>
