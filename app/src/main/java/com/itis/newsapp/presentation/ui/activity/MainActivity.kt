@@ -7,24 +7,27 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.itis.newsapp.R
+import com.itis.newsapp.databinding.ActMainBinding
 import com.itis.newsapp.presentation.base.BaseActivity
+import com.itis.newsapp.presentation.base.BindingActivity
 
 class MainActivity : BaseActivity() {
 
-    override val layout: Int = R.layout.act_main
-
-    lateinit var mainBinding : com.itis.newsapp.databinding.ActMainBinding
-
+    override val layout: Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+       /* var userModel = UserModel()
+        userModel.uName = "Androidian"
+        userModel.pwd = "123456"
+        binding.userModel = userModel*/
+
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.host) as NavHostFragment? ?: return
         val navController = host.navController
         setupBottomNavMenu(navController)
 
-        mainBinding = DataBindingUtil.setContentView(this, layout)
-        mainBinding.userModel = true
+
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

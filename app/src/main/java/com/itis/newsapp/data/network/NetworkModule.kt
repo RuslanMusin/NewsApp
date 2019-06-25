@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.itis.newsapp.data.network.api.NewsApiRequest
 import com.itis.newsapp.data.network.api.NewsApiRequestDecorator
 import com.itis.newsapp.data.network.interceptor.ApiKeyInterceptor
+import com.itis.newsapp.util.LiveDataCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -53,7 +54,7 @@ class NetworkModule {
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .client(okHttpClient)

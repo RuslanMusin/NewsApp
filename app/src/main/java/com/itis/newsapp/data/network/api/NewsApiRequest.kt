@@ -7,7 +7,7 @@ import retrofit2.http.GET
 interface NewsApiRequest {
 
     @GET("sources")
-    fun getSourcesSingle(): LiveData<Sources>
+    fun getSourcesSingle(): LiveData<ApiResponse<Sources>>
 
 
 }

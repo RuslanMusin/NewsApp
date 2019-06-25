@@ -6,38 +6,40 @@
     <data>
         <variable
                 name="userModel"
-                type="boolean" />
+                type="com.itis.newsapp.presentation.ui.activity.UserModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:fitsSystemWindows="true"
-    >
+            android:padding="8dp">
 
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:title="@{userModel}"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        <fragment
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/host"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                app:navGraph="@navigation/main_navigation"
-                app:defaultNavHost="true"
-        />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottom_nav_view"
+        <EditText
+                android:id="@+id/edtUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:menu="@menu/bottom_nav_menu" />
-    </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="User Name"
+                android:inputType="textPersonName"
+                android:text="@={userModel.UName}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.4" />
+
+        <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:text="@={userModel.pwd}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtUserName"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

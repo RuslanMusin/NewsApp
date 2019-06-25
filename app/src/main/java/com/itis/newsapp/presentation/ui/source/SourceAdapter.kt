@@ -1,17 +1,15 @@
 package com.itis.newsapp.presentation.ui.source
 
-import android.view.ViewGroup
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.presentation.base.recycler.BaseAdapter
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.itis.newsapp.R
+import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.databinding.ProductItemBinding
 import java.util.*
-
 
 class SourceAdapter(
     private val mProductClickCallback: SourcesFragment.ProductClickCallback
@@ -56,7 +54,7 @@ class SourceAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding: ProductItemBinding = DataBindingUtil
+        val binding: com.itis.newsapp.databinding.ProductItemBinding = DataBindingUtil
             .inflate<ViewDataBinding>(
                 LayoutInflater.from(parent.context), R.layout.product_item,
                 parent, false
@@ -75,7 +73,7 @@ class SourceAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return mProductList!![position].id.toLong()
+        return mProductList!![position].id.hashCode().toLong()
     }
 }
 

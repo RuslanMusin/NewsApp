@@ -3,10 +3,16 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
+   <!-- <data>
         <variable
                 name="isLoading"
                 type="boolean" />
+    </data>-->
+
+    <data>
+        <variable
+                name="userModel"
+                type="com.itis.newsapp.presentation.ui.activity.UserModel" />
     </data>
 
     <LinearLayout
@@ -21,14 +27,14 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:text="@string/loading"
                 android:textAlignment="center"
-                app:visibleGone="@{isLoading}"/>
+                />
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/products_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:visibleGone="@{!isLoading}"/>
+                />
 
     </LinearLayout>
 </layout>

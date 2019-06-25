@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.DataBindingUtil.setContentView
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.itis.newsapp.FixAndroidInjection
+import com.itis.newsapp.R
 import com.itis.newsapp.logger.Logger
 import com.itis.newsapp.presentation.dialogs.ProgressDialog
 import com.itis.newsapp.presentation.dialogs.builder.DialogBuilder
@@ -41,8 +44,8 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
         FixAndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         Logger.v(TAG, "${javaClass.name} - onCreate()")
-        setContentView(layout)
-        onViewPrepare(savedInstanceState)
+         setContentView(layout)
+         onViewPrepare(savedInstanceState)
     }
 
     override fun onDestroy() {

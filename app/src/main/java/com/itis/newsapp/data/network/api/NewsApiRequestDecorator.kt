@@ -41,7 +41,7 @@ class NewsApiRequestDecorator(val apiRequest: NewsApiRequest) : NewsApiRequest {
         }
     }
 
-    override fun getSourcesSingle(): LiveData<Sources> {
+    override fun getSourcesSingle(): LiveData<ApiResponse<Sources>> {
         return apiRequest
             .getSourcesSingle()
     }

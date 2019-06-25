@@ -11,7 +11,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class MainBuilder {
 
     @ContributesAndroidInjector()
-    abstract fun buildSourcesFragment(): SourcesFragment
+    abstract fun buildSourceFragment(): SourcesFragment
 
     @ContributesAndroidInjector()
     abstract fun buildNewsFragment(): NewsFragment

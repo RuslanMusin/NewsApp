@@ -4,6 +4,7 @@ import android.app.Application
 import com.itis.newsapp.NewsApplication
 import com.itis.newsapp.data.DataModule
 import com.itis.newsapp.di.app.AppModule
+import com.itis.newsapp.di.viewmodel.ViewModelModule
 import com.itis.newsapp.presentation.ui.RootBuilder
 import dagger.BindsInstance
 import dagger.Component
@@ -16,6 +17,7 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         AppModule::class,
         DataModule::class,
+        ViewModelModule::class,
         RootBuilder::class
     ]
 )
