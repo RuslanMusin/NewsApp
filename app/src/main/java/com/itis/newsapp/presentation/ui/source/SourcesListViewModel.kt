@@ -23,7 +23,7 @@ class SourceListViewModel @Inject constructor(application: Application, reposito
 
         val products = repository.getSources()
 
-        // observe the changes of the sources from the database and forward them
+        // observe the changes of the articles from the database and forward them
         mObservableProducts.addSource<List<Source>>(products, mObservableProducts::setValue)
     }
 }

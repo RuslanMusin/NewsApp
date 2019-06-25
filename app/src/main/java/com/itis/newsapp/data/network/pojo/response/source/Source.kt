@@ -1,6 +1,8 @@
 package com.itis.newsapp.data.network.pojo.response.source
 
-class Source {
+import java.io.Serializable
+
+class Source : Serializable {
     var id: String = ""
     var name: String = ""
     var description: String = ""

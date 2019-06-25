@@ -5,6 +5,7 @@ import com.itis.newsapp.data.network.exception.NoInternetConnectionException
 import com.itis.newsapp.data.network.exception.TimeOutException
 import com.itis.newsapp.data.network.exception.UnknownException
 import com.itis.newsapp.data.network.exception.domain.DomainException
+import com.itis.newsapp.data.network.pojo.response.news.News
 import com.itis.newsapp.data.network.pojo.response.source.Sources
 import io.reactivex.*
 import java.net.SocketTimeoutException
@@ -45,4 +46,10 @@ class NewsApiRequestDecorator(val apiRequest: NewsApiRequest) : NewsApiRequest {
         return apiRequest
             .getSourcesSingle()
     }
+
+    override fun getNews(sources: String): LiveData<ApiResponse<News>> {
+        return apiRequest
+            .getNews(sources)
+    }
 }
+

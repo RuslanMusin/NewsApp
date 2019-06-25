@@ -1,4 +1,4 @@
-package com.itis.newsapp.data.repository.source
+package com.itis.newsapp.data.repository.news
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
@@ -8,18 +8,19 @@ import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.news.News
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.data.network.pojo.response.source.Sources
+import com.itis.newsapp.data.repository.source.SourceRepository
 import javax.inject.Inject
 
-class SourceRepositoryImpl @Inject constructor() : SourceRepository {
+class NewsRepositoryImpl @Inject constructor() : NewsRepository {
 
     @Inject
     lateinit var apiRequest: NewsApiRequest
 
-    override fun getSources(): LiveData<List<Source>?> {
+    override fun getNews(source: String): LiveData<List<Article>> {
         return apiRequest
-            .getSourcesSingle()
+            .getNews(source)
             .map {
-                (it as ApiSuccessResponse<Sources>).body.sources
+                (it as ApiSuccessResponse<News>).body.articles
             }
     }
 
