@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
-import com.itis.newsapp.R
+import androidx.navigation.Navigation
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.presentation.base.BindingFragment
+import com.itis.newsapp.presentation.ui.news.item.NewsItemFragment
 import com.itis.newsapp.presentation.ui.source.SourcesFragment.Companion.SOURCE_ARG
-import kotlinx.android.synthetic.main.data_fragment.*
+import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
+import android.view.MenuInflater
+import android.view.Menu
+import android.view.MenuItem
+import com.itis.newsapp.R
 
 class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBinding>() {
 
@@ -32,7 +37,7 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         mProductAdapter = NewsAdapter(mProductClickCallback);
-        binding.productsList.setAdapter(mProductAdapter);
+        binding.newsList.setAdapter(mProductAdapter);
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -52,7 +57,7 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
                     loading_tv.visibility = View.GONE
-                    mProductAdapter.setProductList(myProducts)
+                    mProductAdapter.setNewsList(myProducts)
                 } else {
 //                    binding.setIsLoading(true)
                 }
@@ -69,9 +74,10 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
         override fun onClick(product: Article) {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 Log.d("TAG", "clicked ${product.title}")
-               /* val args = Bundle()
-                args.putSerializable(SOURCE, product)
-                Navigation.findNavController(btn_enter).navigate(R.id.action_sourcesFragment_to_newsFragment, args)*/
+                val args = Bundle()
+                args.putSerializable(NewsItemFragment.NEWS_ITEM_ARG, product)
+                args.putBoolean(NewsItemFragment.SHOW_ADD_ARG, true)
+                view?.let { Navigation.findNavController(it).navigate(R.id.action_newsFragment_to_newsItemFragment, args) }
             }
         }
     }

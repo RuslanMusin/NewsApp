@@ -7,13 +7,11 @@ import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.databinding.DataFragmentBinding
 import com.itis.newsapp.presentation.base.BindingFragment
-import kotlinx.android.synthetic.main.data_fragment.*
-import kotlinx.android.synthetic.main.fragment_chosen_news.*
+import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
 
-class SourcesFragment : BindingFragment<DataFragmentBinding>() {
+class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>() {
 
     companion object {
 
@@ -22,7 +20,7 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
         fun getInstance() = SourcesFragment()
     }
 
-    override val layout: Int = R.layout.data_fragment
+    override val layout: Int = R.layout.fragment_sources
 
     lateinit var mProductAdapter: SourceAdapter
 
@@ -31,25 +29,11 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var sourceListViewModel: SourceListViewModel
-/*
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-//        super.onCreateView(inflater, container, savedInstanceState)
-        binding = DataBindingUtil.inflate(inflater, layout, container, false);
-        return binding.getRoot();
-    }*/
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         mProductAdapter = SourceAdapter(mProductClickCallback);
-        binding.productsList.setAdapter(mProductAdapter);
-
-        /*btn_enter.setOnClickListener {
-            Navigation.findNavController(btn_enter).navigate(com.itis.newsapp.R.id.action_sourcesFragment_to_newsFragment)
-        }*/
+        binding.sourceList.setAdapter(mProductAdapter);
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -65,7 +49,7 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
                     loading_tv.visibility = View.GONE
-                    mProductAdapter.setProductList(myProducts)
+                    mProductAdapter.setSourceList(myProducts)
                 } else {
 //                    binding.setIsLoading(true)
                 }

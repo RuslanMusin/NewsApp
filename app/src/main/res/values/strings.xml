@@ -10,4 +10,6 @@
     <string name="source_name">Название источника</string>
     <string name="source_description">Описание</string>
     <string name="loading">Загрузка..</string>
+    <string name="news_item_name">Название новости</string>
+    <string name="author">Автор</string>
 </resources>
