@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+                name="userModel"
+                type="boolean" />
+    </data>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:fitsSystemWindows="true"
+    >
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="@{userModel}"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <fragment
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/host"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                app:navGraph="@navigation/main_navigation"
+                app:defaultNavHost="true"
+        />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:menu="@menu/bottom_nav_menu" />
+    </LinearLayout>
+
+</layout>

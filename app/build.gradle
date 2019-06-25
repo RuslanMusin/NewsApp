@@ -116,6 +116,9 @@ dependencies {
     //Circle image view
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
+    kapt "com.android.databinding:compiler:$gradle_version"
+
+
     androidTestImplementation "androidx.arch.core:core-testing:$coreTestingVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"

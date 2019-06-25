@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="product"
+                  type="com.itis.newsapp.data.network.pojo.response.source.Source"/>
+        <variable name="callback"
+                  type="com.itis.newsapp.presentation.ui.source.SourcesFragment.ProductClickCallback"/>
+    </data>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:onClick="@{() ->  callback.onClick(product)}"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/normal"
+            android:layout_marginEnd="@dimen/normal"
+            app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+                android:layout_marginStart="@dimen/normal"
+                android:layout_marginEnd="@dimen/normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{product.name}"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/name"
+                    android:text="@{product.description}"/>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

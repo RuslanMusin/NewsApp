@@ -2,6 +2,7 @@ package com.itis.newsapp.presentation.ui.news.list
 
 import android.os.Bundle
 import android.provider.Contacts
+import androidx.databinding.ViewDataBinding
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
 import com.itis.newsapp.presentation.base.BaseFragment

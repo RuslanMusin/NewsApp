@@ -3,13 +3,14 @@ package com.itis.newsapp.presentation.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.renderscript.ScriptGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.Toolbar
+import android.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.arellomobile.mvp.MvpAppCompatFragment
 import com.itis.newsapp.FixAndroidInjection
 import com.itis.newsapp.R
 import com.itis.newsapp.logger.Logger
@@ -18,6 +19,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
+
 
 abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
 
@@ -44,7 +46,7 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
         super.onAttach(context)
     }
 
-    final override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?

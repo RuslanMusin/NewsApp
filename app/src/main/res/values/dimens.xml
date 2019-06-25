@@ -5,4 +5,10 @@
     <dimen name="textSizeLarge">20sp</dimen>
     <dimen name="textSizeExtraLarge">36sp</dimen>
     <dimen name="textSizeScore">72sp</dimen>
+
+    <dimen name="small">4dp</dimen>
+    <dimen name="normal">8dp</dimen>
+    <dimen name="large">16dp</dimen>
+    <dimen name="xlarge">24dp</dimen>
+
 </resources>

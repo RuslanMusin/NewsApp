@@ -9,4 +9,6 @@
     <color name="colorTertiary">#2c3e50</color>
     <color name="colorNeutral">#5192b1</color>
 
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#434343</color>
 </resources>
