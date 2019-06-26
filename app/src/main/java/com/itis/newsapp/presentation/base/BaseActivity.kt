@@ -63,11 +63,11 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
     }
 
     override fun setToolbarTitle(text: String) {
-        supportActionBar?.title = text
+        actionBar?.title = text
     }
 
     override fun setToolbarTitle(text: Int) {
-        supportActionBar?.setTitle(text)
+        actionBar?.setTitle(text)
     }
 
     protected open fun onOpenSupport() {

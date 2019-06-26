@@ -118,6 +118,11 @@ dependencies {
 
     kapt "com.android.databinding:compiler:$gradle_version"
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //ExpandableLayout
+    implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
 
     androidTestImplementation "androidx.arch.core:core-testing:$coreTestingVersion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"

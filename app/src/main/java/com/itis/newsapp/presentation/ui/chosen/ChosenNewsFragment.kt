@@ -13,13 +13,14 @@ import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.databinding.FragmentNewsBinding
 import com.itis.newsapp.presentation.base.BindingFragment
+import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
 import com.itis.newsapp.presentation.ui.news.item.NewsItemFragment
 import com.itis.newsapp.presentation.ui.news.list.NewsAdapter
 import com.itis.newsapp.presentation.ui.news.list.NewsFragment
 import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
 
-class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
+class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>(), BackBtnVisibilityListener {
 
     companion object {
 
@@ -36,6 +37,7 @@ class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarTitle(R.string.chosen_news)
         mProductAdapter = NewsAdapter(mProductClickCallback);
         binding.newsList.setAdapter(mProductAdapter);
     }
@@ -71,5 +73,9 @@ class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
                 view?.let { Navigation.findNavController(it).navigate(R.id.action_chosenNewsFragment_to_newsItemFragment, args) }
             }
         }
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
+        (activity as BackBtnVisibilityListener).setVisibility(false)
     }
 }

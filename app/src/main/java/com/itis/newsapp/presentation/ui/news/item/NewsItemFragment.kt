@@ -5,27 +5,20 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.databinding.FragmentNewsBinding
-import com.itis.newsapp.presentation.base.BaseFragment
 import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.ui.news.list.NewsAdapter
+import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
 import com.itis.newsapp.presentation.ui.news.list.NewsFragment
-import com.itis.newsapp.presentation.ui.news.list.NewsListViewModel
-import com.itis.newsapp.presentation.ui.source.SourcesFragment
-import kotlinx.android.synthetic.main.fragment_sources.*
 import kotlinx.android.synthetic.main.fragment_news_item.*
 import javax.inject.Inject
 
-class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsItemBinding>() {
+class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsItemBinding>(),
+    BackBtnVisibilityListener {
 
     companion object {
         const val NEWS_ITEM_ARG: String = "news_item_arg"
@@ -44,6 +37,9 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarTitle(R.string.news_item)
+        setVisibility(true)
+        li_content.setOnClickListener { showContent() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -63,7 +59,9 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
                     binding.article = myProducts
+                    hideWaitProgressDialog()
                 } else {
+                    showWaitProgressDialog()
 //                    binding.setIsLoading(true)
                 }
                 binding.executePendingBindings()
@@ -72,11 +70,11 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             val showAddBtn = it.getBoolean(SHOW_ADD_ARG)
-            if(showAddBtn) {
-                setHasOptionsMenu(true);
-            }
+            Log.d("TAG", "showAddBtn = $showAddBtn")
+            setHasOptionsMenu(showAddBtn)
         }
     }
 
@@ -93,6 +91,19 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
 
     private fun addArticle() {
         sourceListViewModel.addArticle()
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
+        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
+    }
+
+    fun showContent() {
+        expandable_layout.toggle()
+        if(expandable_layout.isExpanded) {
+            iv_arrow.rotation = 180f
+        } else {
+            iv_arrow.rotation = 0f
+        }
     }
 
 }

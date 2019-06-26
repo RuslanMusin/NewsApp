@@ -8,10 +8,12 @@ import androidx.navigation.Navigation
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.presentation.base.BindingFragment
+import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
 import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
 
-class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>() {
+class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>(),
+    BackBtnVisibilityListener {
 
     companion object {
 
@@ -32,6 +34,8 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarTitle(R.string.sources)
+        setVisibility(false)
         mProductAdapter = SourceAdapter(mProductClickCallback);
         binding.sourceList.setAdapter(mProductAdapter);
     }
@@ -48,9 +52,11 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
             Observer<List<Source>> { myProducts ->
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
+                    hideWaitProgressDialog()
                     loading_tv.visibility = View.GONE
                     mProductAdapter.setSourceList(myProducts)
                 } else {
+                    showWaitProgressDialog(getString(R.string.loading))
 //                    binding.setIsLoading(true)
                 }
                 // espresso does not know how to wait for data binding's loop so we execute changes
@@ -74,5 +80,9 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
 //                (activity as MainActivity).show(product)
             }
         }
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
+        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
     }
 }

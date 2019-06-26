@@ -16,8 +16,12 @@ import android.view.MenuInflater
 import android.view.Menu
 import android.view.MenuItem
 import com.itis.newsapp.R
+import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
 
-class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBinding>() {
+class NewsFragment :
+    BindingFragment<com.itis.newsapp.databinding.FragmentNewsBinding>(),
+    BackBtnVisibilityListener
+{
 
     companion object {
 
@@ -36,6 +40,8 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarTitle(R.string.news)
+        setVisibility(true)
         mProductAdapter = NewsAdapter(mProductClickCallback);
         binding.newsList.setAdapter(mProductAdapter);
     }
@@ -56,9 +62,11 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
             Observer<List<Article>> { myProducts ->
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
+                    hideWaitProgressDialog()
                     loading_tv.visibility = View.GONE
                     mProductAdapter.setNewsList(myProducts)
                 } else {
+                    showWaitProgressDialog(getString(R.string.loading))
 //                    binding.setIsLoading(true)
                 }
                 binding.executePendingBindings()
@@ -80,5 +88,9 @@ class NewsFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsBi
                 view?.let { Navigation.findNavController(it).navigate(R.id.action_newsFragment_to_newsItemFragment, args) }
             }
         }
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
+        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
     }
 }
