@@ -10,7 +10,6 @@ import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.databinding.ItemNewsBinding
-import com.itis.newsapp.databinding.ProductItemBinding
 import com.itis.newsapp.presentation.ui.source.ProductViewHolder
 import com.itis.newsapp.presentation.ui.source.SourcesFragment
 import java.util.*
@@ -25,7 +24,7 @@ class NewsAdapter(
         setHasStableIds(true)
     }
 
-    fun setProductList(productList: List<Article>) {
+    fun setNewsList(productList: List<Article>) {
         if (mProductList == null) {
             mProductList = productList
             notifyItemRangeInserted(0, productList.size)
@@ -69,7 +68,7 @@ class NewsAdapter(
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.binding.setProduct(mProductList!![position])
+        holder.binding.article = mProductList!![position]
         holder.binding.executePendingBindings()
     }
 

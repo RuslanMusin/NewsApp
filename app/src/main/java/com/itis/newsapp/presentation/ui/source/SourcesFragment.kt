@@ -7,13 +7,13 @@ import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.databinding.DataFragmentBinding
 import com.itis.newsapp.presentation.base.BindingFragment
-import kotlinx.android.synthetic.main.data_fragment.*
-import kotlinx.android.synthetic.main.fragment_chosen_news.*
+import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
+import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
 
-class SourcesFragment : BindingFragment<DataFragmentBinding>() {
+class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>(),
+    BackBtnVisibilityListener {
 
     companion object {
 
@@ -22,7 +22,7 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
         fun getInstance() = SourcesFragment()
     }
 
-    override val layout: Int = R.layout.data_fragment
+    override val layout: Int = R.layout.fragment_sources
 
     lateinit var mProductAdapter: SourceAdapter
 
@@ -31,25 +31,13 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var sourceListViewModel: SourceListViewModel
-/*
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-//        super.onCreateView(inflater, container, savedInstanceState)
-        binding = DataBindingUtil.inflate(inflater, layout, container, false);
-        return binding.getRoot();
-    }*/
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarTitle(R.string.sources)
+        setVisibility(false)
         mProductAdapter = SourceAdapter(mProductClickCallback);
-        binding.productsList.setAdapter(mProductAdapter);
-
-        /*btn_enter.setOnClickListener {
-            Navigation.findNavController(btn_enter).navigate(com.itis.newsapp.R.id.action_sourcesFragment_to_newsFragment)
-        }*/
+        binding.sourceList.setAdapter(mProductAdapter);
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -64,9 +52,11 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
             Observer<List<Source>> { myProducts ->
                 if (myProducts != null) {
 //                    binding.setIsLoading(false)
+                    hideWaitProgressDialog()
                     loading_tv.visibility = View.GONE
-                    mProductAdapter.setProductList(myProducts)
+                    mProductAdapter.setSourceList(myProducts)
                 } else {
+                    showWaitProgressDialog(getString(R.string.loading))
 //                    binding.setIsLoading(true)
                 }
                 // espresso does not know how to wait for data binding's loop so we execute changes
@@ -90,5 +80,9 @@ class SourcesFragment : BindingFragment<DataFragmentBinding>() {
 //                (activity as MainActivity).show(product)
             }
         }
+    }
+
+    override fun setVisibility(isVisible: Boolean) {
+        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
     }
 }

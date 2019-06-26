@@ -1,19 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-            android:id="@+id/tv_arg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Text here"
-            android:layout_gravity="center"
-            android:layout_margin="50dp"
-            android:textSize="16dp"
+    <data>
+        <variable
+                name="article"
+                type="com.itis.newsapp.data.network.pojo.response.news.Article" />
+    </data>
 
-    />
+    <RelativeLayout
+                    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
 
+        <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+        >
 
-</LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large"
+                    android:layout_marginStart="@dimen/large"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:id="@+id/li_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:orientation="vertical">
+
+                    <RelativeLayout
+                            android:id="@+id/profileInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/normal"
+                            android:paddingBottom="@dimen/normal"
+                            android:paddingRight="@dimen/normal"
+                    >
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/iv_portrait"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentLeft="true"
+                                android:src="@mipmap/ic_launcher"
+                                android:alpha="1"
+                                app:url="@{article.urlToImage}"
+                        />
+
+                        <LinearLayout
+                                android:id="@+id/linearLayout"
+                                android:layout_width="180dp"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/iv_portrait"
+                                android:layout_centerVertical="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="@dimen/normal"
+                                android:layout_marginStart="@dimen/normal"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:id="@+id/tv_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginStart="@dimen/normal"
+                                    android:text="@={article.title}"
+                            />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/news_item_name"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_test_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={article.title}" />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/author"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={article.author}"
+                    />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+            <!--    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/published"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_published"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={article.publishedAt}"
+                    />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>-->
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/description"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={article.description}"
+                    />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/news_url"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_url"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={article.url}"
+                    />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+                <LinearLayout
+                        android:id="@+id/li_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:orientation="vertical">
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                    >
+
+                        <RelativeLayout
+                                android:id="@+id/expand_button"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_alignParentEnd="true"
+                                android:gravity="center"
+                        >
+
+                            <View
+                                    android:id="@+id/iv_arrow"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:background="@drawable/arrow"
+                            />
+
+                        </RelativeLayout>
+
+                        <TextView
+                                android:id="@+id/tv_content_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_toLeftOf="@id/expand_button"
+                                android:textColor="@color/primary_dark_text"
+                                android:text="@string/content"
+                                android:textSize="16sp"
+                        />
+
+                        <net.cachapa.expandablelayout.ExpandableLayout
+                                android:id="@+id/expandable_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_below="@id/tv_content_name"
+                                app:el_duration="300"
+                                app:el_expanded="false"
+                        >
+
+                            <TextView
+                                    android:id="@+id/tv_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:elevation="4dp"
+                                    android:textSize="@dimen/textSizeSmall"
+                                    android:paddingBottom="8dp"
+                                    android:text="@={article.content}"
+                                    android:textColor="@color/primary_dark_text" />
+
+                        </net.cachapa.expandablelayout.ExpandableLayout>
+
+                    </RelativeLayout>
+
+                    <include layout="@layout/layout_divider"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</layout>

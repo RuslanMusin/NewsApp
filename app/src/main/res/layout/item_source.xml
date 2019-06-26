@@ -1,73 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_marginTop="8dp"
->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="source"
+                  type="com.itis.newsapp.data.network.pojo.response.source.Source"/>
+        <variable name="callback"
+                  type="com.itis.newsapp.presentation.ui.source.SourcesFragment.ProductClickCallback"/>
+    </data>
 
-    <LinearLayout
-            android:id="@+id/li_name"
-            android:orientation="vertical"
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="8dp">
+            android:minHeight="60dp"
+            android:onClick="@{() ->  callback.onClick(source)}"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/normal"
+            android:layout_marginEnd="@dimen/normal"
+            app:cardUseCompatPadding="true">
 
-        <TextView
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal"
-                android:text="@string/source_name"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/textSizeMedium" />
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+        >
 
-        <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/secondary_text"
-                android:textSize="@dimen/textSizeSmall"
-                tools:text="Authors" />
+            <LinearLayout
+                    android:id="@+id/li_name"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="8dp">
 
-    </LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:text="@string/news_item_name"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textSizeMedium" />
 
-    <LinearLayout
-            android:id="@+id/li_id"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="8dp">
+                <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/textSizeSmall"
+                        android:text="@={source.name}"
+                />
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal"
-                android:text="@string/source_description"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/textSizeMedium" />
+            </LinearLayout>
 
-        <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal"
-                android:textColor="@color/secondary_text"
-                android:textSize="@dimen/textSizeSmall"
-                tools:text="Authors" />
+            <LinearLayout
+                    android:id="@+id/li_description"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="8dp">
 
-    </LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:text="@string/description"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textSizeMedium" />
 
+                <TextView
+                        android:id="@+id/tv_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/textSizeSmall"
+                        android:text="@={source.description}"
+                />
 
-<!--
-    <include layout="@layout/layout_divider"/>
--->
+            </LinearLayout>
 
-</LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

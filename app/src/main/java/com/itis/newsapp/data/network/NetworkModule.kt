@@ -1,9 +1,11 @@
 package com.itis.newsapp.data.network
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.itis.newsapp.data.network.api.NewsApiRequest
 import com.itis.newsapp.data.network.api.NewsApiRequestDecorator
 import com.itis.newsapp.data.network.interceptor.ApiKeyInterceptor
+import com.itis.newsapp.util.Const.TIME_FORMAT
 import com.itis.newsapp.util.LiveDataCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -53,9 +55,10 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder().setDateFormat(TIME_FORMAT).create()
         return Retrofit.Builder()
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .build()

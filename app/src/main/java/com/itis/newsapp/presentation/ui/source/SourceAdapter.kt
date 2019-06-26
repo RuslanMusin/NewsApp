@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.databinding.ProductItemBinding
+import com.itis.newsapp.databinding.ItemSourceBinding
 import java.util.*
 
 class SourceAdapter(
@@ -21,7 +21,7 @@ class SourceAdapter(
         setHasStableIds(true)
     }
 
-    fun setProductList(productList: List<Source>) {
+    fun setSourceList(productList: List<Source>) {
         if (mProductList == null) {
             mProductList = productList
             notifyItemRangeInserted(0, productList.size)
@@ -54,17 +54,17 @@ class SourceAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding: com.itis.newsapp.databinding.ProductItemBinding = DataBindingUtil
+        val binding: com.itis.newsapp.databinding.ItemSourceBinding = DataBindingUtil
             .inflate<ViewDataBinding>(
-                LayoutInflater.from(parent.context), R.layout.product_item,
+                LayoutInflater.from(parent.context), R.layout.item_source,
                 parent, false
-            ) as ProductItemBinding
+            ) as com.itis.newsapp.databinding.ItemSourceBinding
         binding.setCallback(mProductClickCallback)
         return ProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.binding.setProduct(mProductList!![position])
+        holder.binding.setSource(mProductList!![position])
         holder.binding.executePendingBindings()
     }
 
@@ -77,4 +77,4 @@ class SourceAdapter(
     }
 }
 
-class ProductViewHolder(val binding: com.itis.newsapp.databinding.ProductItemBinding) : RecyclerView.ViewHolder(binding.getRoot())
+class ProductViewHolder(val binding: com.itis.newsapp.databinding.ItemSourceBinding) : RecyclerView.ViewHolder(binding.getRoot())
