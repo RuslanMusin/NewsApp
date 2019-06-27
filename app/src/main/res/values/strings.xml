@@ -20,5 +20,6 @@
     <string name="published">Опубликовано</string>
     <string name="news_url">Ссылка на статью</string>
     <string name="content">Содержание статьи</string>
+    <string name="source">Источник</string>
 
 </resources>

@@ -13,14 +13,14 @@ import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.databinding.FragmentNewsBinding
 import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
 import com.itis.newsapp.presentation.ui.news.item.NewsItemFragment
+import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
 import com.itis.newsapp.presentation.ui.news.list.NewsAdapter
 import com.itis.newsapp.presentation.ui.news.list.NewsFragment
 import kotlinx.android.synthetic.main.fragment_sources.*
 import javax.inject.Inject
 
-class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>(), BackBtnVisibilityListener {
+class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
 
     companion object {
 
@@ -33,49 +33,48 @@ class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>(), BackBtnVisibi
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var sourceListViewModel: ChosenNewsViewModel
+    private lateinit var chosenNewsViewModel: ChosenNewsViewModel
+    private lateinit var newsItemViewModel: NewsItemViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         setToolbarTitle(R.string.chosen_news)
+        setNavigationIconVisibility(false)
         mProductAdapter = NewsAdapter(mProductClickCallback);
         binding.newsList.setAdapter(mProductAdapter);
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sourceListViewModel = ViewModelProviders.of(this, viewModelFactory)[ChosenNewsViewModel::class.java]
-        subscribeUi(sourceListViewModel.articles)
+        chosenNewsViewModel = ViewModelProviders.of(this, viewModelFactory)[ChosenNewsViewModel::class.java]
+        newsItemViewModel = activity?.run {
+            ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
+
+        subscribeUi(chosenNewsViewModel.articles)
     }
 
     private fun subscribeUi(liveData: LiveData<List<Article>>) {
-        // Update the list when the data changes
         liveData.observe(this,
             Observer<List<Article>> { myProducts ->
                 if (myProducts != null) {
-//                    binding.setIsLoading(false)
                     loading_tv.visibility = View.GONE
                     mProductAdapter.setNewsList(myProducts)
                 } else {
-//                    binding.setIsLoading(true)
                 }
                 binding.executePendingBindings()
             })
     }
 
     private val mProductClickCallback = object : NewsFragment.ProductClickCallback {
-        override fun onClick(product: Article) {
+        override fun onClick(article: Article) {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                Log.d("TAG", "clicked ${product.title}")
+                Log.d("TAG", "clicked ${article.title}")
                 val args = Bundle()
-                args.putSerializable(NewsItemFragment.NEWS_ITEM_ARG, product)
+                newsItemViewModel.selectArticle(article)
                 args.putBoolean(NewsItemFragment.SHOW_ADD_ARG, false)
                 view?.let { Navigation.findNavController(it).navigate(R.id.action_chosenNewsFragment_to_newsItemFragment, args) }
             }
         }
-    }
-
-    override fun setVisibility(isVisible: Boolean) {
-        (activity as BackBtnVisibilityListener).setVisibility(false)
     }
 }

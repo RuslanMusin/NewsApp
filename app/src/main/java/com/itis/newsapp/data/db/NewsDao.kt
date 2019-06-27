@@ -20,6 +20,6 @@ abstract class NewsDao {
         ORDER BY title DESC
         """
     )
-    abstract fun loadContributors(): LiveData<List<Article>>
+    abstract fun loadArticles(): LiveData<List<Article>>
 
 }

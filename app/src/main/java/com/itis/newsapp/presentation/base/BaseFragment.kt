@@ -91,6 +91,13 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
         }
     }
 
+    override fun setNavigationIconVisibility(isVisible: Boolean) {
+        activity?.let {
+            if (it is BaseView)
+                it.setNavigationIconVisibility(isVisible)
+        }
+    }
+
     override fun showErrorDialog(message: Int, isSupport: Boolean, title: Int) {
         showErrorDialog(getString(message), isSupport, title)
     }

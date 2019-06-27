@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.itis.newsapp.presentation.ui.chosen.ChosenNewsViewModel
 import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
 import com.itis.newsapp.presentation.ui.news.list.NewsListViewModel
-import com.itis.newsapp.presentation.ui.source.SourceListViewModel
+import com.itis.newsapp.presentation.ui.source.SourcesListViewModel
 import com.itis.newsapp.presentation.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -13,10 +13,14 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class ViewModelModule {
+
+    @Binds
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
+
     @Binds
     @IntoMap
-    @ViewModelKey(SourceListViewModel::class)
-    abstract fun bindSourceListViewModel(sourceListViewModel: SourceListViewModel): ViewModel
+    @ViewModelKey(SourcesListViewModel::class)
+    abstract fun bindSourceListViewModel(sourceListViewModel: SourcesListViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -32,7 +36,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChosenNewsViewModel::class)
     abstract fun bindChosenNewsViewModel(newsItemViewModel: ChosenNewsViewModel): ViewModel
-
-    @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

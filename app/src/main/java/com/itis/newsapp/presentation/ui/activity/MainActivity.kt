@@ -5,40 +5,36 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.itis.newsapp.R
-import com.itis.newsapp.presentation.base.BaseActivity
-import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
+import com.itis.newsapp.presentation.base.BindingActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), BackBtnVisibilityListener {
 
-    override val layout: Int = R.layout.activity_main
+class MainActivity : BindingActivity<com.itis.newsapp.databinding.ActivityMainBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-       /* var userModel = UserModel()
-        userModel.uName = "Androidian"
-        userModel.pwd = "123456"
-        binding.userModel = userModel*/
+    override val layout: Int = com.itis.newsapp.R.layout.activity_main
 
+    override fun onViewPrepare(savedInstanceState: Bundle?) {
+        super.onViewPrepare(savedInstanceState)
         val host: NavHostFragment = supportFragmentManager
-            .findFragmentById(R.id.host) as NavHostFragment? ?: return
+            .findFragmentById(com.itis.newsapp.R.id.host) as NavHostFragment? ?: return
         val navController = host.navController
         setupBottomNavMenu(navController)
-
+        setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
+
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        val bottomNav = findViewById<BottomNavigationView>(com.itis.newsapp.R.id.bottom_nav_view)
         bottomNav?.setupWithNavController(navController)
     }
 
-    override fun setVisibility(isVisible: Boolean) {
+    override fun setNavigationIconVisibility(isVisible: Boolean) {
         if(isVisible) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            toolbar.setNavigationIcon(com.itis.newsapp.R.drawable.ic_arrow_back_white_24dp)
         } else {
             toolbar.setNavigationIcon(null)
         }
     }
+
 }

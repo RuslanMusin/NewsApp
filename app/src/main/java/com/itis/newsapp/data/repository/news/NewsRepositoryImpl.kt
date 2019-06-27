@@ -8,9 +8,6 @@ import com.itis.newsapp.data.network.api.ApiSuccessResponse
 import com.itis.newsapp.data.network.api.NewsApiRequest
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.news.News
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.data.network.pojo.response.source.Sources
-import com.itis.newsapp.data.repository.source.SourceRepository
 import io.reactivex.Completable
 import javax.inject.Inject
 
@@ -37,7 +34,7 @@ class NewsRepositoryImpl @Inject constructor() : NewsRepository {
 
     override fun getArticles(): LiveData<List<Article>> {
         return newsDao
-            .loadContributors()
+            .loadArticles()
     }
 
 }

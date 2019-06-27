@@ -5,8 +5,8 @@
 
     <data>
         <variable
-                name="article"
-                type="com.itis.newsapp.data.network.pojo.response.news.Article" />
+                name="model"
+                type="com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel" />
     </data>
 
     <RelativeLayout
@@ -53,7 +53,7 @@
                                 android:layout_alignParentLeft="true"
                                 android:src="@mipmap/ic_launcher"
                                 android:alpha="1"
-                                app:url="@{article.urlToImage}"
+                                app:url="@{model.article.urlToImage}"
                         />
 
                         <LinearLayout
@@ -75,7 +75,7 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:layout_marginStart="@dimen/normal"
-                                    android:text="@={article.title}"
+                                    android:text="@={model.article.title}"
                             />
 
                         </LinearLayout>
@@ -107,7 +107,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={article.title}" />
+                            android:text="@={model.article.title}" />
 
                 </LinearLayout>
 
@@ -134,14 +134,42 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={article.author}"
+                            android:text="@={model.article.author}"
                     />
 
                 </LinearLayout>
 
                 <include layout="@layout/layout_divider"/>
 
-            <!--    <LinearLayout
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/small"
+                        android:paddingBottom="@dimen/small"
+                >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/source"
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textSizeMedium" />
+
+                    <TextView
+                            android:id="@+id/tv_source"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/small"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textSizeSmall"
+                            android:text="@={model.article.source.name}"
+                    />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_divider"/>
+
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -162,12 +190,12 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={article.publishedAt}"
+                            android:text="@{model.article.publishedAt}"
                     />
 
                 </LinearLayout>
 
-                <include layout="@layout/layout_divider"/>-->
+                <include layout="@layout/layout_divider"/>
 
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -190,7 +218,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={article.description}"
+                            android:text="@={model.article.description}"
                     />
 
                 </LinearLayout>
@@ -218,7 +246,9 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={article.url}"
+                            android:text="@={model.article.url}"
+                            android:autoLink="web"
+                            android:linksClickable="true"
                     />
 
                 </LinearLayout>
@@ -282,14 +312,14 @@
                                     android:elevation="4dp"
                                     android:textSize="@dimen/textSizeSmall"
                                     android:paddingBottom="8dp"
-                                    android:text="@={article.content}"
+                                    android:text="@={model.article.content}"
                                     android:textColor="@color/primary_dark_text" />
 
                         </net.cachapa.expandablelayout.ExpandableLayout>
 
                     </RelativeLayout>
 
-                    <include layout="@layout/layout_divider"/>
+                    <!--<include layout="@layout/layout_divider"/>-->
 
                 </LinearLayout>
             </LinearLayout>

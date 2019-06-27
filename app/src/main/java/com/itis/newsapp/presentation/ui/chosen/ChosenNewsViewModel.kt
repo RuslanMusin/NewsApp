@@ -16,26 +16,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class ChosenNewsViewModel @Inject constructor(application: Application, val repository: NewsRepository) : AndroidViewModel(application) {
+class ChosenNewsViewModel
+    @Inject constructor(application: Application, val repository: NewsRepository)
+    : AndroidViewModel(application) {
 
-//    private val mObservableProducts: MediatorLiveData<List<Article>>
-
-    @Inject
-    lateinit var newsDao: NewsDao
-    val articles: LiveData<List<Article>>
-        get() = newsDao.loadContributors()
-
-    /* init {
-         mObservableProducts = MediatorLiveData<List<Article>>()
-         // set by default null, until we get data from the database.
-         mObservableProducts.value = null
-
-     }
-
-     fun setNews(source: Source) {
-         val products = repository.getNews(source.id)
-
-         // observe the changes of the articles from the database and forward them
-         mObservableProducts.addSource<List<Article>>(products, mObservableProducts::setValue)
-     }*/
+    val articles: LiveData<List<Article>> = repository.getArticles()
 }

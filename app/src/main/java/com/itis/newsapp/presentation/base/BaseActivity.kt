@@ -44,8 +44,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
         FixAndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         Logger.v(TAG, "${javaClass.name} - onCreate()")
-         setContentView(layout)
-         onViewPrepare(savedInstanceState)
     }
 
     override fun onDestroy() {
@@ -63,11 +61,11 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
     }
 
     override fun setToolbarTitle(text: String) {
-        actionBar?.title = text
+        (this as AppCompatActivity).supportActionBar?.title = text
     }
 
     override fun setToolbarTitle(text: Int) {
-        actionBar?.setTitle(text)
+        (this as AppCompatActivity).supportActionBar?.setTitle(text)
     }
 
     protected open fun onOpenSupport() {

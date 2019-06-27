@@ -1,33 +1,26 @@
 package com.itis.newsapp.presentation.ui.news.list
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.*
+import com.bumptech.glide.load.engine.Resource
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.data.repository.news.NewsRepository
-import com.itis.newsapp.data.repository.source.SourceRepository
 import javax.inject.Inject
 
-class NewsListViewModel @Inject constructor(application: Application, val repository: NewsRepository) : AndroidViewModel(application) {
+class NewsListViewModel
+    @Inject constructor(application: Application, val repository: NewsRepository)
+    : AndroidViewModel(application) {
 
-    private val mObservableProducts: MediatorLiveData<List<Article>>
+    private val _sourceId: MutableLiveData<String> = MutableLiveData()
+    val sourceId: LiveData<String>
+        get() = _sourceId
 
-    val articles: LiveData<List<Article>>
-        get() = mObservableProducts
+    val articles: LiveData<List<Article>> = Transformations
+        .switchMap(sourceId) { id -> repository.getNews(id)}
 
-    init {
-        mObservableProducts = MediatorLiveData<List<Article>>()
-        // set by default null, until we get data from the database.
-        mObservableProducts.value = null
 
-    }
-
-    fun setNews(source: Source) {
-        val products = repository.getNews(source.id)
-
-        // observe the changes of the articles from the database and forward them
-        mObservableProducts.addSource<List<Article>>(products, mObservableProducts::setValue)
+    fun setNews(sourceId: String) {
+        _sourceId.value = sourceId
     }
 }

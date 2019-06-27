@@ -6,38 +6,26 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.itis.newsapp.data.db.NewsDao
 import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.data.repository.news.NewsRepository
 import com.itis.newsapp.presentation.rx.transformer.PresentationCompletableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class NewsItemViewModel @Inject constructor(application: Application, val repository: NewsRepository) : AndroidViewModel(application) {
+class NewsItemViewModel
+    @Inject constructor(application: Application, val repository: NewsRepository)
+    : AndroidViewModel(application) {
 
-    private val mObservableProducts: MediatorLiveData<Article>
-
-    private val disposable = CompositeDisposable()
-
+    val _article = MutableLiveData<Article>()
 
     val article: LiveData<Article>
-        get() = mObservableProducts
+        get() = _article
 
-    init {
-        mObservableProducts = MediatorLiveData<Article>()
-        // set by default null, until we get data from the database.
-        mObservableProducts.value = null
-
+    fun selectArticle(item: Article) {
+        _article.value = item
     }
 
-    fun setNews(source: Article) {
-        val products = MutableLiveData<Article>()
-        products.value = source
-
-        // observe the changes of the articles from the database and forward them
-        mObservableProducts.addSource<Article>(products, mObservableProducts::setValue)
-    }
+    private val disposable = CompositeDisposable()
 
     fun addArticle() {
         article.value?.let {
