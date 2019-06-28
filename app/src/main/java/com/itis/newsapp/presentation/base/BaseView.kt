@@ -23,4 +23,8 @@ interface BaseView : MvpView {
     fun showInfoDialog(title: Int, message: String)
 
     fun showInfoDialog(title: Int, message: Int)
+
+    fun showDisconnectView()
+
+    fun hideDisconnectView()
 }

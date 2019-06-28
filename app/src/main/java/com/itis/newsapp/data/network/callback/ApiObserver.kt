@@ -1,4 +1,4 @@
-package com.itis.newsapp.util
+package com.itis.newsapp.data.network.callback
 
 import androidx.lifecycle.Observer
 import com.itis.newsapp.data.network.pojo.response.DataWrapper

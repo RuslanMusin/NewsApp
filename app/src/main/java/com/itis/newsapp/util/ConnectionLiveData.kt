@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.viewmodel.connection
+package com.itis.newsapp.util
 
 import android.app.Application
 import android.content.BroadcastReceiver
@@ -10,17 +10,17 @@ import android.net.NetworkInfo
 import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 
-object InternetUtil : MutableLiveData<Boolean>() {
+class ConnectionLiveData @Inject constructor(val application: Application) : MutableLiveData<Boolean>() {
 
     private var broadcastReceiver: BroadcastReceiver? = null
-    private lateinit var application: Application
     private var isSet = false
 
-    fun init(application: Application): InternetUtil {
-        this.application = application
+    /*fun init(application: Application): ConnectionLiveData {
+        ConnectionLiveData.application = application
         return this
-    }
+    }*/
 
     fun isInternetOn(): Boolean {
         val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

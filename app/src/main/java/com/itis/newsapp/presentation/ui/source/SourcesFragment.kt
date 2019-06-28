@@ -1,25 +1,21 @@
 package com.itis.newsapp.presentation.ui.source
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.pojo.response.DataWrapper
+import com.itis.newsapp.data.network.exception.NoInternetConnectionException
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.data.network.pojo.response.source.Sources
 import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.util.ApiObserver
+import com.itis.newsapp.data.network.callback.ApiObserver
 import javax.inject.Inject
 
 class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>() {
 
     companion object {
-
-        const val SOURCE_ARG: String = "source_arg"
 
         fun getInstance() = SourcesFragment()
     }
@@ -34,52 +30,66 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarData()
+        bindModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sourceListViewModel.sources.observe(this, observer)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sourceListViewModel.sources.removeObserver(observer)
+    }
+
+    private fun setToolbarData() {
         setToolbarTitle(R.string.sources)
         setNavigationIconVisibility(false)
-        sourceAdapter = SourceAdapter(sourceClickCallback);
-        binding.sourceList.setAdapter(sourceAdapter);
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun bindModel() {
         sourceListViewModel = ViewModelProviders.of(this, viewModelFactory)[SourcesListViewModel::class.java]
-        subscribeUi(sourceListViewModel.sources)
+        sourceListViewModel.sources.observe(this, observer)
+
+        sourceAdapter = SourceAdapter(sourceClickCallback)
+        binding.sourceList.setAdapter(sourceAdapter)
     }
 
-    private fun subscribeUi(liveData: LiveData<DataWrapper<Sources>>) {
-        liveData.observe(this,
-            ApiObserver<Sources>(object: ApiObserver.ChangeListener<Sources> {
-                override fun onSuccess(dataWrapper: Sources?) {
-                    Log.d("TAG","onSuccess")
-                    if (dataWrapper?.sources != null) {
-                        hideWaitProgressDialog()
-                        dataWrapper.sources?.let { sourceAdapter.setSourceList(it) }
-                    } else {
-                        showWaitProgressDialog()
-                    }
-                    binding.executePendingBindings()
+
+    private val observer = ApiObserver<Sources>(object :
+        ApiObserver.ChangeListener<Sources> {
+        override fun onSuccess(dataWrapper: Sources?) {
+            if (dataWrapper?.sources != null) {
+                hideWaitProgressDialog()
+                Log.d("TAG", "setAfterLoading")
+
+                dataWrapper.sources?.let {
+                    Log.d("TAG", "setSources")
+                    sourceAdapter.setSourceList(it)
                 }
+            } else {
+                showWaitProgressDialog()
+            }
+            binding.executePendingBindings()
+        }
 
-                override fun onException(exception: Exception?) {
-                    Log.d("TAG","onError")
-//                    showErrorDialog(R.string.you_disconnected, true, R.string.disconnected)
-                    exception?.message?.let { showErrorDialog(it, true, R.string.disconnected) }
-//                    sourceListViewModel.requestSources()
-                }
+        override fun onException(exception: Exception?) {
+            Log.d("TAG", "onError")
+            if (exception is NoInternetConnectionException) {
+                exception.message?.let { showErrorDialog(it, true, R.string.disconnected) }
+                showDisconnectView()
+            }
+        }
 
-                override fun onDataLoad() {
-                    showWaitProgressDialog()
-                }
-
-            })
-        )
-        /*liveData.observe(this,
-            Observer { sources ->
-
-            })*/
-    }
+        override fun onDataLoad() {
+            showWaitProgressDialog()
+        }
+    })
 
     override fun onRetry() {
+         showWaitProgressDialog()
          sourceListViewModel.requestSources()
     }
 
@@ -90,7 +100,6 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
     private val sourceClickCallback = object : SourceClickCallback {
         override fun onClick(source: Source) {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                Log.d("TAG", "clicked ${source.name}")
                 val action: SourcesFragmentDirections.ActionToNewsFragment = SourcesFragmentDirections.actionToNewsFragment()
                 action.sourceId = source.id
                 view?.let { Navigation.findNavController(it).navigate(action) }

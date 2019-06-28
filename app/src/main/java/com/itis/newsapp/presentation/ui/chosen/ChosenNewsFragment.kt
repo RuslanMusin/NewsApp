@@ -25,7 +25,7 @@ class ChosenNewsFragment :
 
     override val layout: Int = R.layout.fragment_news
 
-    lateinit var mProductAdapter: NewsAdapter
+    lateinit var chosenNewsAdapter: NewsAdapter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -34,39 +34,48 @@ class ChosenNewsFragment :
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
-        setToolbarTitle(R.string.chosen_news)
-        setNavigationIconVisibility(false)
-        mProductAdapter = NewsAdapter(this);
-        binding.newsList.setAdapter(mProductAdapter);
+        setToolbarData()
+        bindModel()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+        chosenNewsViewModel.articles.observe(this, observer)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        chosenNewsViewModel.articles.removeObserver(observer)
+    }
+
+    private fun setToolbarData() {
+        setToolbarTitle(R.string.chosen_news)
+        setNavigationIconVisibility(false)
+    }
+
+    private fun bindModel() {
         chosenNewsViewModel = ViewModelProviders.of(this, viewModelFactory)[ChosenNewsViewModel::class.java]
         newsItemViewModel = activity?.run {
             ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
-
-        subscribeUi(chosenNewsViewModel.articles)
+        chosenNewsViewModel.articles.observe(this, observer)
+        hideDisconnectView()
+        chosenNewsAdapter = NewsAdapter(this)
+        binding.newsList.setAdapter(chosenNewsAdapter)
     }
 
-    private fun subscribeUi(liveData: LiveData<List<Article>>) {
-        showWaitProgressDialog()
-        liveData.observe(this,
-            Observer<List<Article>> { myProducts ->
-                if (myProducts != null) {
-                    hideWaitProgressDialog()
-                    mProductAdapter.setNewsList(myProducts)
-                } else {
-                    showWaitProgressDialog()
-                }
-                binding.executePendingBindings()
-            })
+    private val observer = Observer<List<Article>> { articles ->
+        if (articles != null) {
+            hideWaitProgressDialog()
+            chosenNewsAdapter.setNewsList(articles)
+        } else {
+            showWaitProgressDialog()
+        }
+        binding.executePendingBindings()
     }
 
     override fun onClick(article: Article) {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            Log.d("TAG", "clicked ${article.title}")
             newsItemViewModel.selectArticle(article, getCurrentItemId())
             view?.let { Navigation.findNavController(it).navigate(R.id.action_to_newsItemFragment) }
         }

@@ -317,7 +317,8 @@
                                 android:id="@+id/expandable_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
+                                android:layout_marginTop="@dimen/normal"
+                                android:layout_marginBottom="@dimen/normal"
                                 android:layout_below="@id/tv_content_name"
                                 app:el_duration="300"
                                 app:el_expanded="false"
@@ -336,8 +337,6 @@
                         </net.cachapa.expandablelayout.ExpandableLayout>
 
                     </RelativeLayout>
-
-                    <!--<include layout="@layout/layout_divider"/>-->
 
                 </LinearLayout>
             </LinearLayout>

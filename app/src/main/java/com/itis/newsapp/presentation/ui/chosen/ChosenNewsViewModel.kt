@@ -20,7 +20,4 @@ class ChosenNewsViewModel
         _articles.addSource(repository.getChosenArticles(), _articles::setValue)
     }
 
-    fun requestArticles() {
-        _articles.addSource(repository.getChosenArticles(), _articles::setValue)
-    }
 }

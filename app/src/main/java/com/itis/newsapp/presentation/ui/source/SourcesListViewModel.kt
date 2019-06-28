@@ -19,7 +19,7 @@ class SourcesListViewModel @Inject constructor(application: Application, val rep
     init {
         _sources = MediatorLiveData<DataWrapper<Sources>>()
         _sources.value = null
-        _sources.addSource<DataWrapper<Sources>>(repository.getSources(), _sources::setValue)
+       requestSources()
     }
 
     fun requestSources() {

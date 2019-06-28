@@ -22,5 +22,4 @@ abstract class BindingFragment<T: ViewDataBinding> : BaseFragment(), BottomNavOw
         return (activity as BottomNavOwner).getCurrentItemId()
     }
 
-    open fun onRetry() { }
 }

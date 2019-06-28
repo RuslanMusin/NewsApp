@@ -138,7 +138,18 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
         (activity as? BaseActivity)?.showInfoDialog(title, message)
     }
 
+    override fun showDisconnectView() {
+        (activity as? BaseActivity)?.showDisconnectView()
+    }
+
+    override fun hideDisconnectView() {
+        (activity as? BaseActivity)?.hideDisconnectView()
+    }
+
     open fun onBackPressed(): Boolean {
         return false
     }
+
+    open fun onRetry() { }
+
 }

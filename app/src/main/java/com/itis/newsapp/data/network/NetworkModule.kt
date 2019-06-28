@@ -1,5 +1,6 @@
 package com.itis.newsapp.data.network
 
+import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.itis.newsapp.BuildConfig
@@ -7,6 +8,7 @@ import com.itis.newsapp.data.network.adapter.LiveDataCallAdapterFactory
 import com.itis.newsapp.data.network.api.NewsApiRequest
 import com.itis.newsapp.data.network.api.NewsApiRequestDecorator
 import com.itis.newsapp.data.network.interceptor.ApiKeyInterceptor
+import com.itis.newsapp.util.ConnectionLiveData
 import com.itis.newsapp.util.Const.TIME_NETWORK_FORMAT
 import dagger.Module
 import dagger.Provides
@@ -72,5 +74,11 @@ class NetworkModule {
     fun provideNewsApi(retrofit: Retrofit): NewsApiRequest {
         val service = retrofit.create(NewsApiRequest::class.java)
         return NewsApiRequestDecorator(service)
+    }
+
+    @Singleton
+    @Provides
+    fun provideConnectionLiveData(application: Application): ConnectionLiveData {
+        return ConnectionLiveData(application)
     }
 }

@@ -7,11 +7,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.itis.newsapp.presentation.base.BaseFragment
 import com.itis.newsapp.presentation.base.BindingActivity
 import com.itis.newsapp.presentation.base.BindingFragment
 import com.itis.newsapp.presentation.base.navigation.BottomNavOwner
-import com.itis.newsapp.presentation.viewmodel.connection.InternetUtil
+import com.itis.newsapp.util.ConnectionLiveData
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 
 class MainActivity :
@@ -22,6 +24,9 @@ class MainActivity :
 
     lateinit var host: NavHostFragment
 
+    @Inject
+    lateinit var connectionLiveData: ConnectionLiveData
+
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         host = supportFragmentManager
@@ -31,19 +36,16 @@ class MainActivity :
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        InternetUtil.init(application).observe(this, Observer {
+        connectionLiveData.observe(this, Observer {
             if(it) {
-                hideDisconnect()
+                Log.d("TAG", "hideDisView")
+                hideDisconnectView()
+                host.childFragmentManager.primaryNavigationFragment?.let {fragment->
+                    Log.d("TAG", "onRetry")
+                    (fragment as BaseFragment).onRetry()
+                }
             }
-            if(it && host is BindingFragment<*>) {
-                Log.d("TAG", "connection")
-                hideDisconnect()
-                (supportFragmentManager
-                    .findFragmentById(com.itis.newsapp.R.id.host) as BindingFragment<*>).onRetry()
-            } else if (!it) {
-                Log.d("TAG", "disconnect")
-                showDisconnect()
-            }
+
         })
     }
 
@@ -68,38 +70,24 @@ class MainActivity :
         layout_wait.visibility = View.VISIBLE
         layout_connectivity.visibility = View.GONE
         lyaout_main.visibility = View.GONE
-//        hideFragment()
-
     }
 
     override fun hideWaitProgressDialog() {
         Log.d("TAG", "hideLoading")
-        layout_wait.visibility = View.GONE
         lyaout_main.visibility = View.VISIBLE
-//        showFragment()
+        layout_wait.visibility = View.GONE
+        layout_connectivity.visibility = View.GONE
     }
 
-    private fun showDisconnect() {
+    override fun showDisconnectView() {
         layout_connectivity.visibility = View.VISIBLE
         layout_wait.visibility = View.GONE
         lyaout_main.visibility = View.GONE
     }
 
-    private fun hideDisconnect() {
-        layout_connectivity.visibility = View.GONE
+    override fun hideDisconnectView() {
         lyaout_main.visibility = View.VISIBLE
+        layout_connectivity.visibility = View.GONE
+        layout_wait.visibility = View.GONE
     }
-
-    private fun hideFragment() {
-        host.fragmentManager?.beginTransaction()
-            ?.hide(host)
-            ?.commit()
-    }
-
-    private fun showFragment() {
-        host.fragmentManager?.beginTransaction()
-            ?.show(host)
-            ?.commit()
-    }
-
 }
