@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.itis.newsapp.presentation.base.navigation.BottomNavOwner
 
-abstract class BindingFragment<T: ViewDataBinding> : BaseFragment() {
+abstract class BindingFragment<T: ViewDataBinding> : BaseFragment(), BottomNavOwner {
 
     lateinit var binding: T
 
@@ -16,4 +17,10 @@ abstract class BindingFragment<T: ViewDataBinding> : BaseFragment() {
         binding = DataBindingUtil.inflate(inflater, layout, container, false);
         return binding.getRoot();
     }
+
+    override fun getCurrentItemId(): Int {
+        return (activity as BottomNavOwner).getCurrentItemId()
+    }
+
+    open fun onRetry() { }
 }

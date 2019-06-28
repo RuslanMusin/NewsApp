@@ -4,9 +4,15 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="java.util.HashMap"/>
+
         <variable
                 name="model"
                 type="com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel" />
+
+        <variable
+                name="itemId"
+                type="Integer" />
     </data>
 
     <RelativeLayout
@@ -46,6 +52,15 @@
                             android:paddingRight="@dimen/normal"
                     >
 
+                        <ProgressBar
+                                android:id="@+id/progress"
+                                android:layout_gravity="center"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:padding="20dp"
+                                android:layout_alignParentLeft="true"
+                        />
+
                         <de.hdodenhof.circleimageview.CircleImageView
                                 android:id="@+id/iv_portrait"
                                 android:layout_width="100dp"
@@ -53,8 +68,11 @@
                                 android:layout_alignParentLeft="true"
                                 android:src="@mipmap/ic_launcher"
                                 android:alpha="1"
-                                app:url="@{model.article.urlToImage}"
+                                app:url="@{model.article[itemId].urlToImage}"
+                                android:visibility="gone"
                         />
+
+
 
                         <LinearLayout
                                 android:id="@+id/linearLayout"
@@ -75,7 +93,7 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:layout_marginStart="@dimen/normal"
-                                    android:text="@={model.article.title}"
+                                    android:text="@={model.article[itemId].title}"
                             />
 
                         </LinearLayout>
@@ -107,7 +125,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={model.article.title}" />
+                            android:text="@={model.article[itemId].title}" />
 
                 </LinearLayout>
 
@@ -134,7 +152,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={model.article.author}"
+                            android:text="@={model.article[itemId].author}"
                     />
 
                 </LinearLayout>
@@ -162,7 +180,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={model.article.source.name}"
+                            android:text="@={model.article[itemId].source.name}"
                     />
 
                 </LinearLayout>
@@ -190,7 +208,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@{model.article.publishedAt}"
+                            android:text="@{model.article[itemId].publishedAt}"
                     />
 
                 </LinearLayout>
@@ -218,7 +236,7 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={model.article.description}"
+                            android:text="@={model.article[itemId].description}"
                     />
 
                 </LinearLayout>
@@ -246,9 +264,9 @@
                             android:layout_marginTop="@dimen/small"
                             android:textColor="@color/secondary_text"
                             android:textSize="@dimen/textSizeSmall"
-                            android:text="@={model.article.url}"
-                            android:autoLink="web"
+                            android:text="@{model.article[itemId].url}"
                             android:linksClickable="true"
+                            android:autoLink="web"
                     />
 
                 </LinearLayout>
@@ -312,7 +330,7 @@
                                     android:elevation="4dp"
                                     android:textSize="@dimen/textSizeSmall"
                                     android:paddingBottom="8dp"
-                                    android:text="@={model.article.content}"
+                                    android:text="@={model.article[itemId].content}"
                                     android:textColor="@color/primary_dark_text" />
 
                         </net.cachapa.expandablelayout.ExpandableLayout>

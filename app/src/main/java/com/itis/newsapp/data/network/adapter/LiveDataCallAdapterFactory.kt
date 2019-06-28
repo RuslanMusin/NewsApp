@@ -1,7 +1,7 @@
-package com.itis.newsapp.util
+package com.itis.newsapp.data.network.adapter
 
 import androidx.lifecycle.LiveData
-import com.itis.newsapp.data.network.api.ApiResponse
+import com.itis.newsapp.data.network.pojo.response.DataWrapper
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
@@ -18,7 +18,7 @@ class LiveDataCallAdapterFactory : CallAdapter.Factory() {
         }
         val observableType = CallAdapter.Factory.getParameterUpperBound(0, returnType as ParameterizedType)
         val rawObservableType = CallAdapter.Factory.getRawType(observableType)
-        if (rawObservableType != ApiResponse::class.java) {
+        if (rawObservableType != DataWrapper::class.java) {
             throw IllegalArgumentException("type must be a resource")
         }
         if (observableType !is ParameterizedType) {

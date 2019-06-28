@@ -5,7 +5,7 @@
         <variable name="article"
                   type="com.itis.newsapp.data.network.pojo.response.news.Article"/>
         <variable name="callback"
-                  type="com.itis.newsapp.presentation.ui.news.list.NewsFragment.ProductClickCallback"/>
+                  type="com.itis.newsapp.presentation.ui.news.list.NewsItemClickListener"/>
     </data>
 
     <androidx.cardview.widget.CardView

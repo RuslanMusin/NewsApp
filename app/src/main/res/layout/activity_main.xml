@@ -28,20 +28,53 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <fragment
-                android:id="@+id/host"
+        <include
+                android:id="@+id/layout_wait"
+                layout="@layout/layout_wait"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_weight="1"
+                 android:visibility="visible"
+        />
+
+        <include
+                android:id="@+id/layout_connectivity"
+                layout="@layout/layout_connectivity"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                app:navGraph="@navigation/main_navigation"
-                app:defaultNavHost="true"
+                android:visibility="gone"
         />
+
+        <LinearLayout
+                android:id="@+id/lyaout_main"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone"
+        >
+
+            <fragment
+                    android:id="@+id/host"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    app:navGraph="@navigation/main_navigation"
+                    app:defaultNavHost="true"
+            />
+
+        </LinearLayout>
+
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/primary"
+                app:itemIconTint="@drawable/nav_item_color_state"
+                app:itemTextColor="@drawable/nav_item_color_state"
                 app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>
 

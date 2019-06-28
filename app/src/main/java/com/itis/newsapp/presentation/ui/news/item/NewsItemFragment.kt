@@ -1,14 +1,14 @@
 package com.itis.newsapp.presentation.ui.news.item
 
 import android.os.Bundle
-import android.util.Log
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.navArgs
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.presentation.base.BindingFragment
@@ -32,33 +32,31 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
 
     lateinit var source: Article
 
+    val safeArgs: NewsItemFragmentArgs by navArgs()
+
+    var isAddedClicked: Boolean = false
+    lateinit var addBtn: MenuItem
+
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         setToolbarTitle(R.string.news_item)
         setNavigationIconVisibility(true)
         li_content.setOnClickListener { showContent() }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(safeArgs.showAddBtn)
+        tv_url.movementMethod = LinkMovementMethod.getInstance()
         articleViewModel = activity?.run {
             ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
+        binding.itemId = getCurrentItemId()
         binding.model = articleViewModel
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            val showAddBtn = it.getBoolean(SHOW_ADD_ARG)
-            setHasOptionsMenu(showAddBtn)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu.clear();
+        menu.clear()
         inflater.inflate(R.menu.add_menu, menu)
+        addBtn = menu.findItem(R.id.add_article)
+        subscribeToUi()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -68,8 +66,26 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
         return super.onOptionsItemSelected(item)
     }
 
+    private fun subscribeToUi() {
+        articleViewModel.checkArticleExists(getCurrentItemId())
+        articleViewModel.isAdded.observe(this,
+            Observer<Boolean> { isAdded ->
+                if (isAdded != null && isAdded) {
+                    addBtn.setVisible(false)
+                    if(isAddedClicked) {
+                        isAddedClicked = false
+                        showInfoDialog(R.string.article_add_title, R.string.article_succes_added)
+                    }
+                } else {
+                    addBtn.setVisible(true)
+                }
+                binding.executePendingBindings()
+            })
+    }
+
     private fun addArticle() {
-        articleViewModel.addArticle()
+        isAddedClicked = true
+        articleViewModel.addArticle(getCurrentItemId())
     }
 
     fun showContent() {
@@ -79,6 +95,10 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
         } else {
             iv_arrow.rotation = 0f
         }
+    }
+
+    interface ProductClickCallback {
+        fun onClick(article: Article)
     }
 
 }

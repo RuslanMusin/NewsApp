@@ -12,7 +12,7 @@ import com.itis.newsapp.databinding.ItemNewsBinding
 import java.util.*
 
 class NewsAdapter(
-    private val mProductClickCallback: NewsFragment.ProductClickCallback
+    private val itemClickListener: NewsItemClickListener
 ) : RecyclerView.Adapter<NewsViewHolder>() {
 
     internal var newsList: List<Article>? = null
@@ -60,7 +60,7 @@ class NewsAdapter(
                 LayoutInflater.from(parent.context), R.layout.item_news,
                 parent, false
             ) as ItemNewsBinding
-        binding.setCallback(mProductClickCallback)
+        binding.setCallback(itemClickListener)
         return NewsViewHolder(binding)
     }
 

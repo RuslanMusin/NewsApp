@@ -1,12 +1,14 @@
 package com.itis.newsapp.data.network.interceptor
 
+import com.itis.newsapp.BuildConfig
 import okhttp3.Interceptor
-import java.io.IOException
-import okhttp3.HttpUrl
 import okhttp3.Response
+import java.io.IOException
 
 
 class ApiKeyInterceptor() : Interceptor {
+
+    private val API_KEY_PARAM = "apiKey"
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -14,7 +16,7 @@ class ApiKeyInterceptor() : Interceptor {
         val originalHttpUrl = original.url()
 
         val url = originalHttpUrl.newBuilder()
-            .addQueryParameter("apiKey", "60bd0949dac3428d91bd7fc95a12ab20")
+            .addQueryParameter(API_KEY_PARAM, BuildConfig.API_KEY)
             .build()
 
         val requestBuilder = original.newBuilder()

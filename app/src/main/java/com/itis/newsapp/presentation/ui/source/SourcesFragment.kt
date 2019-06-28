@@ -2,13 +2,17 @@ package com.itis.newsapp.presentation.ui.source
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
+import com.itis.newsapp.data.network.pojo.response.DataWrapper
 import com.itis.newsapp.data.network.pojo.response.source.Source
+import com.itis.newsapp.data.network.pojo.response.source.Sources
 import com.itis.newsapp.presentation.base.BindingFragment
-import kotlinx.android.synthetic.main.fragment_sources.*
+import com.itis.newsapp.util.ApiObserver
 import javax.inject.Inject
 
 class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>() {
@@ -32,7 +36,7 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
         super.onViewPrepare(savedInstanceState)
         setToolbarTitle(R.string.sources)
         setNavigationIconVisibility(false)
-        sourceAdapter = SourceAdapter(mProductClickCallback);
+        sourceAdapter = SourceAdapter(sourceClickCallback);
         binding.sourceList.setAdapter(sourceAdapter);
     }
 
@@ -42,31 +46,54 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
         subscribeUi(sourceListViewModel.sources)
     }
 
-    private fun subscribeUi(liveData: LiveData<List<Source>?>) {
+    private fun subscribeUi(liveData: LiveData<DataWrapper<Sources>>) {
         liveData.observe(this,
-            Observer { sources ->
-                if (sources != null) {
-                    hideWaitProgressDialog()
-                    loading_tv.visibility = View.GONE
-                    sourceAdapter.setSourceList(sources)
-                } else {
-                    showWaitProgressDialog(getString(R.string.loading))
+            ApiObserver<Sources>(object: ApiObserver.ChangeListener<Sources> {
+                override fun onSuccess(dataWrapper: Sources?) {
+                    Log.d("TAG","onSuccess")
+                    if (dataWrapper?.sources != null) {
+                        hideWaitProgressDialog()
+                        dataWrapper.sources?.let { sourceAdapter.setSourceList(it) }
+                    } else {
+                        showWaitProgressDialog()
+                    }
+                    binding.executePendingBindings()
                 }
-                binding.executePendingBindings()
+
+                override fun onException(exception: Exception?) {
+                    Log.d("TAG","onError")
+//                    showErrorDialog(R.string.you_disconnected, true, R.string.disconnected)
+                    exception?.message?.let { showErrorDialog(it, true, R.string.disconnected) }
+//                    sourceListViewModel.requestSources()
+                }
+
+                override fun onDataLoad() {
+                    showWaitProgressDialog()
+                }
+
             })
+        )
+        /*liveData.observe(this,
+            Observer { sources ->
+
+            })*/
     }
 
-    interface ProductClickCallback {
-        fun onClick(product: Source)
+    override fun onRetry() {
+         sourceListViewModel.requestSources()
     }
 
-    private val mProductClickCallback = object : ProductClickCallback {
-        override fun onClick(product: Source) {
+    interface SourceClickCallback {
+        fun onClick(source: Source)
+    }
+
+    private val sourceClickCallback = object : SourceClickCallback {
+        override fun onClick(source: Source) {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                Log.d("TAG", "clicked ${product.name}")
-                val args = Bundle()
-                args.putSerializable(SOURCE_ARG, product.id)
-                view?.let { Navigation.findNavController(it).navigate(R.id.action_sourcesFragment_to_newsFragment, args) }
+                Log.d("TAG", "clicked ${source.name}")
+                val action: SourcesFragmentDirections.ActionToNewsFragment = SourcesFragmentDirections.actionToNewsFragment()
+                action.sourceId = source.id
+                view?.let { Navigation.findNavController(it).navigate(action) }
             }
         }
     }

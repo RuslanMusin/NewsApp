@@ -2,25 +2,21 @@ package com.itis.newsapp.presentation.ui.chosen
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.databinding.FragmentNewsBinding
 import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.ui.news.item.NewsItemFragment
 import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
 import com.itis.newsapp.presentation.ui.news.list.NewsAdapter
-import com.itis.newsapp.presentation.ui.news.list.NewsFragment
-import kotlinx.android.synthetic.main.fragment_sources.*
+import com.itis.newsapp.presentation.ui.news.list.NewsItemClickListener
 import javax.inject.Inject
 
-class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
+class ChosenNewsFragment :
+    BindingFragment<FragmentNewsBinding>(),
+    NewsItemClickListener
+{
 
     companion object {
 
@@ -40,7 +36,7 @@ class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
         super.onViewPrepare(savedInstanceState)
         setToolbarTitle(R.string.chosen_news)
         setNavigationIconVisibility(false)
-        mProductAdapter = NewsAdapter(mProductClickCallback);
+        mProductAdapter = NewsAdapter(this);
         binding.newsList.setAdapter(mProductAdapter);
     }
 
@@ -55,26 +51,25 @@ class ChosenNewsFragment : BindingFragment<FragmentNewsBinding>() {
     }
 
     private fun subscribeUi(liveData: LiveData<List<Article>>) {
+        showWaitProgressDialog()
         liveData.observe(this,
             Observer<List<Article>> { myProducts ->
                 if (myProducts != null) {
-                    loading_tv.visibility = View.GONE
+                    hideWaitProgressDialog()
                     mProductAdapter.setNewsList(myProducts)
                 } else {
+                    showWaitProgressDialog()
                 }
                 binding.executePendingBindings()
             })
     }
 
-    private val mProductClickCallback = object : NewsFragment.ProductClickCallback {
-        override fun onClick(article: Article) {
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                Log.d("TAG", "clicked ${article.title}")
-                val args = Bundle()
-                newsItemViewModel.selectArticle(article)
-                args.putBoolean(NewsItemFragment.SHOW_ADD_ARG, false)
-                view?.let { Navigation.findNavController(it).navigate(R.id.action_chosenNewsFragment_to_newsItemFragment, args) }
-            }
+    override fun onClick(article: Article) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            Log.d("TAG", "clicked ${article.title}")
+            newsItemViewModel.selectArticle(article, getCurrentItemId())
+            view?.let { Navigation.findNavController(it).navigate(R.id.action_to_newsItemFragment) }
         }
     }
+
 }

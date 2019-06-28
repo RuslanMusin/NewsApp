@@ -5,8 +5,6 @@ import com.itis.newsapp.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.Executors
 
 class NewsApplication : DaggerApplication() {
 

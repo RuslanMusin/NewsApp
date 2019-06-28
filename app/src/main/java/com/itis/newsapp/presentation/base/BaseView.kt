@@ -1,8 +1,6 @@
 package com.itis.newsapp.presentation.base
 
 import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
-import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.itis.newsapp.R
 
 interface BaseView : MvpView {

@@ -1,12 +1,7 @@
 package com.itis.newsapp.data.db
 
 import androidx.room.TypeConverter
-import com.itis.newsapp.util.Const.TIME_STR_FORMAT
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
 import java.util.*
-import java.util.Arrays.asList
-import java.util.stream.Collectors
 
 class DateConverter {
 

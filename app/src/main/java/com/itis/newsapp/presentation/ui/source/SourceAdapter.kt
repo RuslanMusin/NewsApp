@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.itis.newsapp.R
 import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.databinding.ItemSourceBinding
 import java.util.*
 
 class SourceAdapter(
-    private val mProductClickCallback: SourcesFragment.ProductClickCallback
+    private val mSourceClickCallback: SourcesFragment.SourceClickCallback
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     internal var mProductList: List<Source>? = null
@@ -59,7 +58,7 @@ class SourceAdapter(
                 LayoutInflater.from(parent.context), R.layout.item_source,
                 parent, false
             ) as com.itis.newsapp.databinding.ItemSourceBinding
-        binding.setCallback(mProductClickCallback)
+        binding.setCallback(mSourceClickCallback)
         return ProductViewHolder(binding)
     }
 

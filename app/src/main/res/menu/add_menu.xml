@@ -5,6 +5,7 @@
             android:id="@+id/add_article"
             android:title="@string/news"
             android:icon="@drawable/ic_note_add_white_24dp"
+            android:visible="false"
             app:showAsAction="ifRoom" />
 
 </menu>

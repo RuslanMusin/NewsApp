@@ -1,6 +1,8 @@
 package com.itis.newsapp.presentation.rx.transformer
 
-import io.reactivex.*
+import io.reactivex.Maybe
+import io.reactivex.MaybeSource
+import io.reactivex.MaybeTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 

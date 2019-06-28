@@ -2,18 +2,12 @@ package com.itis.newsapp.presentation.base
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.DataBindingUtil.setContentView
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.itis.newsapp.FixAndroidInjection
-import com.itis.newsapp.R
-import com.itis.newsapp.logger.Logger
 import com.itis.newsapp.presentation.dialogs.ProgressDialog
 import com.itis.newsapp.presentation.dialogs.builder.DialogBuilder
 import dagger.android.AndroidInjector
@@ -24,7 +18,7 @@ import javax.inject.Inject
 abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentInjector {
 
     companion object {
-        private const val TAG = "MoxyActivity"
+        private const val TAG = "BaseActivity"
         private const val TAG_ERROR_DIALOG = "TextDialog"
         private const val TAG_PROGRESS_DIALOG = "ProgressDialog"
         private const val TAG_INFO_DIALOG = "IconDialog"
@@ -43,17 +37,18 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
     override fun onCreate(savedInstanceState: Bundle?) {
         FixAndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        Logger.v(TAG, "${javaClass.name} - onCreate()")
+        Log.v(TAG, "${javaClass.name} - onCreate()")
+        onViewPrepare(savedInstanceState)
     }
 
     override fun onDestroy() {
         onViewDestroy()
         super.onDestroy()
-        Logger.v(TAG, "${javaClass.name} - onDestroy()")
+        Log.v(TAG, "${javaClass.name} - onDestroy()")
     }
 
     protected open fun onViewPrepare(savedInstanceState: Bundle?) {
-
+        setContentView(layout)
     }
 
     protected open fun onViewDestroy() {

@@ -3,18 +3,15 @@ package com.itis.newsapp.presentation.base
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.renderscript.ScriptGroup
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.itis.newsapp.FixAndroidInjection
 import com.itis.newsapp.R
-import com.itis.newsapp.logger.Logger
-import com.itis.newsapp.presentation.dialogs.ProgressDialog
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -24,7 +21,7 @@ import javax.inject.Inject
 abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
 
     companion object {
-        private const val TAG = "MoxyFragment"
+        private const val TAG = "BaseFragment"
         private const val TAG_PROGRESS_DIALOG = "ProgressDialog"
     }
 
@@ -51,13 +48,8 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Logger.v(TAG, "${javaClass.name} - onCreateView()")
+        Log.v(TAG, "${javaClass.name} - onCreateView()")
         return inflater.inflate(layout, container, false)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("com.bankcalendar.presentation.base.Mark", "SaveMarker")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,7 +60,7 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
     override fun onDestroyView() {
         onViewDestroy()
         super.onDestroyView()
-        Logger.v(TAG, "${javaClass.name} - onDestroyView()")
+        Log.v(TAG, "${javaClass.name} - onDestroyView()")
     }
 
     protected open fun onViewPrepare(savedInstanceState: Bundle?) {
@@ -127,16 +119,14 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
     override fun showWaitProgressDialog(message: String?) {
         isProgressVisible = true
         if (!isStateSaved) {
-            ProgressDialog.getInstance(message).show(childFragmentManager, TAG_PROGRESS_DIALOG)
+            (activity as? BaseActivity)?.showWaitProgressDialog(message)
         }
     }
 
     override fun hideWaitProgressDialog() {
         isProgressVisible = false
         if (!isStateSaved) {
-            val dialog =
-                childFragmentManager.findFragmentByTag(TAG_PROGRESS_DIALOG) as? ProgressDialog
-            dialog?.dismiss()
+            (activity as? BaseActivity)?.hideWaitProgressDialog()
         }
     }
 

@@ -2,8 +2,8 @@ package com.itis.newsapp
 
 import android.app.Activity
 import android.app.Service
+import android.util.Log
 import androidx.fragment.app.Fragment
-import com.itis.newsapp.logger.Logger
 import dagger.android.HasActivityInjector
 import dagger.android.HasServiceInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -49,7 +49,7 @@ object FixAndroidInjection {
 
     fun inject(fragment: Fragment) {
         val hasSupportFragmentInjector = findHasFragmentInjector(fragment)
-        Logger.d("FixAndroidInjection", String.format("An injector for %s was found in %s", fragment.javaClass.canonicalName, hasSupportFragmentInjector.javaClass.canonicalName))
+        Log.d("FixAndroidInjection", String.format("An injector for %s was found in %s", fragment.javaClass.canonicalName, hasSupportFragmentInjector.javaClass.canonicalName))
         val fragmentInjector = hasSupportFragmentInjector.supportFragmentInjector()
         checkNotNull(fragmentInjector) { String.format("%s.supportFragmentInjector() returned null", hasSupportFragmentInjector.javaClass.name) }
         fragmentInjector.inject(fragment)

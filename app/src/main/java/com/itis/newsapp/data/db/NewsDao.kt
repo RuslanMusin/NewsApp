@@ -17,9 +17,17 @@ abstract class NewsDao {
     @Query(
         """
         SELECT * FROM article
-        ORDER BY title DESC
+        ORDER BY publishedAt DESC
         """
     )
     abstract fun loadArticles(): LiveData<List<Article>>
+
+    @Query(
+        """
+        SELECT 1 FROM article
+        WHERE url = :url
+        """
+    )
+    abstract fun getIsArticleSaved(url: String): LiveData<Boolean>
 
 }
