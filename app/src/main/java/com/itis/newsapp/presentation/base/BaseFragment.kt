@@ -10,8 +10,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.itis.newsapp.FixAndroidInjection
 import com.itis.newsapp.R
+import com.itis.newsapp.presentation.ui.source.SourcesListViewModel
+import com.itis.newsapp.presentation.viewmodel.connection.IndicatorViewModel
+import com.itis.newsapp.util.ConnectionLiveData
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -34,6 +40,11 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
     @field:Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var indicatorViewModel: IndicatorViewModel
+
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return dispatchingAndroidInjector
     }
@@ -54,6 +65,9 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        indicatorViewModel = ViewModelProviders.of(
+            this, viewModelFactory)[IndicatorViewModel::class.java]
+        observeNetworkState()
         onViewPrepare(savedInstanceState)
     }
 
@@ -98,17 +112,6 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
         (activity as? BaseActivity)?.showErrorDialog(message, isSupport, title)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!isProgressVisible) {
-            hideWaitProgressDialog()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
     override fun hideKeyboard() {
         val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
         val view = activity?.currentFocus
@@ -117,17 +120,12 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
     }
 
     override fun showWaitProgressDialog(message: String?) {
-        isProgressVisible = true
-        if (!isStateSaved) {
-            (activity as? BaseActivity)?.showWaitProgressDialog(message)
-        }
+        indicatorViewModel.setWaitIndicator(true)
     }
 
     override fun hideWaitProgressDialog() {
-        isProgressVisible = false
-        if (!isStateSaved) {
-            (activity as? BaseActivity)?.hideWaitProgressDialog()
-        }
+        indicatorViewModel.setWaitIndicator(false)
+
     }
 
     override fun showInfoDialog(title: Int, message: String) {
@@ -139,15 +137,25 @@ abstract class BaseFragment : Fragment(), BaseView, HasSupportFragmentInjector {
     }
 
     override fun showDisconnectView() {
-        (activity as? BaseActivity)?.showDisconnectView()
+        indicatorViewModel.setDisconnectIndicator(true)
     }
 
     override fun hideDisconnectView() {
-        (activity as? BaseActivity)?.hideDisconnectView()
+        indicatorViewModel.setDisconnectIndicator(false)
     }
 
     open fun onBackPressed(): Boolean {
         return false
+    }
+
+    open fun observeNetworkState() {
+        indicatorViewModel.connectionLiveData.observe(this, Observer {
+            if(it) {
+                Log.d("TAG", "hideDisView")
+                hideDisconnectView()
+                onRetry()
+            }
+        })
     }
 
     open fun onRetry() { }

@@ -4,15 +4,16 @@ import androidx.lifecycle.LiveData
 import com.itis.newsapp.data.network.pojo.response.DataWrapper
 import com.itis.newsapp.data.network.pojo.response.news.News
 import com.itis.newsapp.data.network.pojo.response.source.Sources
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NewsApiRequest {
 
     @GET("sources")
-    fun getSourcesSingle(): LiveData<DataWrapper<Sources>>
+    fun getSourcesSingle(): Single<Sources>
 
     @GET("top-headlines")
-    fun getNews(@Query("sources") sources: String): LiveData<DataWrapper<News>>
+    fun getNews(@Query("sources") sources: String): Single<News>
 
 }

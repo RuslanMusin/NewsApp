@@ -27,8 +27,8 @@ class ChosenNewsFragment :
 
     lateinit var chosenNewsAdapter: NewsAdapter
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+  /*  @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory*/
     private lateinit var chosenNewsViewModel: ChosenNewsViewModel
     private lateinit var newsItemViewModel: NewsItemViewModel
 

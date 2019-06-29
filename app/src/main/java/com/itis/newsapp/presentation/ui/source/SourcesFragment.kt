@@ -1,17 +1,20 @@
 package com.itis.newsapp.presentation.ui.source
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.navigation.Navigation
-import com.itis.newsapp.R
 import com.itis.newsapp.data.network.exception.NoInternetConnectionException
 import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.data.network.pojo.response.source.Sources
 import com.itis.newsapp.presentation.base.BindingFragment
 import com.itis.newsapp.data.network.callback.ApiObserver
+import com.itis.newsapp.presentation.ui.model.Response
 import javax.inject.Inject
+import com.itis.newsapp.presentation.ui.model.Status
+import com.itis.newsapp.util.observeOnlyOnce
+import com.itis.newsapp.R
+
 
 class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>() {
 
@@ -24,24 +27,19 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
 
     lateinit var sourceAdapter: SourceAdapter
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var sourceListViewModel: SourcesListViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         setToolbarData()
-        bindModel()
-    }
+        sourceListViewModel = ViewModelProviders.of(
+            this, viewModelFactory)[SourcesListViewModel::class.java]
+        observeViewModel()
 
-    override fun onResume() {
-        super.onResume()
-        sourceListViewModel.sources.observe(this, observer)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sourceListViewModel.sources.removeObserver(observer)
+        binding.indicatorModel = indicatorViewModel
+        sourceAdapter = SourceAdapter(sourceClickCallback)
+        binding.sourceList.setAdapter(sourceAdapter)
+        sourceListViewModel.loadSources()
     }
 
     private fun setToolbarData() {
@@ -49,48 +47,48 @@ class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSou
         setNavigationIconVisibility(false)
     }
 
-    private fun bindModel() {
-        sourceListViewModel = ViewModelProviders.of(this, viewModelFactory)[SourcesListViewModel::class.java]
-        sourceListViewModel.sources.observe(this, observer)
-
-        sourceAdapter = SourceAdapter(sourceClickCallback)
-        binding.sourceList.setAdapter(sourceAdapter)
-    }
-
-
-    private val observer = ApiObserver<Sources>(object :
-        ApiObserver.ChangeListener<Sources> {
-        override fun onSuccess(dataWrapper: Sources?) {
-            if (dataWrapper?.sources != null) {
-                hideWaitProgressDialog()
-                Log.d("TAG", "setAfterLoading")
-
-                dataWrapper.sources?.let {
-                    Log.d("TAG", "setSources")
-                    sourceAdapter.setSourceList(it)
-                }
-            } else {
-                showWaitProgressDialog()
-            }
-            binding.executePendingBindings()
-        }
-
-        override fun onException(exception: Exception?) {
-            Log.d("TAG", "onError")
-            if (exception is NoInternetConnectionException) {
-                exception.message?.let { showErrorDialog(it, true, R.string.disconnected) }
+    private fun observeViewModel() {
+        sourceListViewModel.response.observe(this) { res -> processResponse(res)}
+        sourceListViewModel.isDisconnected.observe(this) {
+            if(it) {
                 showDisconnectView()
             }
         }
+    }
 
-        override fun onDataLoad() {
-            showWaitProgressDialog()
+    private fun processResponse(response: Response<List<Source>>) {
+        when (response.status) {
+            Status.LOADING -> renderLoadingState()
+
+            Status.SUCCESS -> renderDataState(response.data)
+
+            Status.ERROR -> renderErrorState(response.errorMessage)
         }
-    })
+    }
+
+    private fun renderLoadingState() {
+        showWaitProgressDialog()
+    }
+
+    private fun renderDataState(sources: List<Source>?) {
+        Log.d("TAG","update")
+        hideWaitProgressDialog()
+        sources?.let { sourceAdapter.setSourceList(it) }
+    }
+
+    private fun renderErrorState(errorMessage: String?) {
+        hideWaitProgressDialog()
+        errorMessage?.let { showErrorDialog(it, true, R.string.error) }
+    }
 
     override fun onRetry() {
-         showWaitProgressDialog()
-         sourceListViewModel.requestSources()
+        Log.d("TAG_source", "onRetry")
+        sourceListViewModel.response.observeOnlyOnce(this, Observer {
+            Log.d("TAG_source", "status = ${it.status}")
+            if (it.status == Status.ERROR) {
+                sourceListViewModel.loadSources()
+            }
+        })
     }
 
     interface SourceClickCallback {

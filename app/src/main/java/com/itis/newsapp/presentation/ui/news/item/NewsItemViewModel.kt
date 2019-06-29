@@ -54,7 +54,7 @@ class NewsItemViewModel
             .doAfterTerminate { _isAdded.value = true }
             .subscribe(
                 { Log.d("TAG", "insert article") },
-                { error -> Log.e("TAG", "error insert article", error) }
+                { error -> Log.e("TAG", "errorMessage insert article", error) }
             ).disposeWhenDestroy()
         }
     }

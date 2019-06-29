@@ -28,31 +28,13 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include
-                android:id="@+id/layout_wait"
-                layout="@layout/layout_wait"
-                 android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_weight="1"
-                 android:visibility="visible"
-        />
-
-        <include
-                android:id="@+id/layout_connectivity"
-                layout="@layout/layout_connectivity"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:visibility="gone"
-        />
-
         <LinearLayout
                 android:id="@+id/lyaout_main"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
         >
 
             <fragment

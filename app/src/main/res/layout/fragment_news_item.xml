@@ -13,7 +13,13 @@
         <variable
                 name="itemId"
                 type="Integer" />
+
+        <variable
+                name="indicatorModel"
+                type="com.itis.newsapp.presentation.viewmodel.connection.IndicatorViewModel" />
+
     </data>
+
 
     <RelativeLayout
                     xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"

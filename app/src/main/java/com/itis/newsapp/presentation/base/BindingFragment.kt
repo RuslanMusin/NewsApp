@@ -14,7 +14,8 @@ abstract class BindingFragment<T: ViewDataBinding> : BaseFragment(), BottomNavOw
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = DataBindingUtil.inflate(inflater, layout, container, false);
+        binding = DataBindingUtil.inflate(inflater, layout, container, false)
+        binding.setLifecycleOwner(this);
         return binding.getRoot();
     }
 

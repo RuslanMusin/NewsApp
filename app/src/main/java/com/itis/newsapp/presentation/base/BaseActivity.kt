@@ -146,4 +146,10 @@ abstract class BaseActivity : AppCompatActivity(), BaseView, HasSupportFragmentI
                 .show(supportFragmentManager, TAG_INFO_DIALOG)
         }
     }
+
+    override fun showDisconnectView() {
+    }
+
+    override fun hideDisconnectView() {
+    }
 }

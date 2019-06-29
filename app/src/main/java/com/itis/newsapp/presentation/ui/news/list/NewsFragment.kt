@@ -2,8 +2,10 @@ package com.itis.newsapp.presentation.ui.news.list
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.itis.newsapp.R
@@ -13,6 +15,9 @@ import com.itis.newsapp.data.network.pojo.response.news.News
 import com.itis.newsapp.presentation.base.BindingFragment
 import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
 import com.itis.newsapp.data.network.callback.ApiObserver
+import com.itis.newsapp.presentation.ui.model.Response
+import com.itis.newsapp.presentation.ui.model.Status
+import com.itis.newsapp.util.observeOnlyOnce
 import javax.inject.Inject
 
 class NewsFragment :
@@ -31,25 +36,24 @@ class NewsFragment :
 
     val safeArgs: NewsFragmentArgs by navArgs()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    /*@Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory*/
     private lateinit var newsViewModel: NewsListViewModel
     private lateinit var newsItemViewModel: NewsItemViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         setToolbarData()
-        bindModel()
-    }
+        newsViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsListViewModel::class.java]
+        newsItemViewModel = activity?.run {
+            ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
+        observeViewModel()
+        binding.indicatorModel = indicatorViewModel
+        newsAdapter = NewsAdapter(this)
+        binding.newsList.setAdapter(newsAdapter)
+        newsViewModel.loadNews(safeArgs.sourceId)
 
-    override fun onResume() {
-        super.onResume()
-        newsViewModel.articles.observe(this, observer)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        newsViewModel.articles.removeObserver(observer)
     }
 
     private fun setToolbarData() {
@@ -57,45 +61,46 @@ class NewsFragment :
         setNavigationIconVisibility(true)
     }
 
-    private fun bindModel() {
-        newsViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsListViewModel::class.java]
-        newsItemViewModel = activity?.run {
-            ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
-        newsViewModel.articles.observe(this, observer)
-        newsViewModel.setNews(safeArgs.sourceId)
-
-        newsAdapter = NewsAdapter(this)
-        binding.newsList.setAdapter(newsAdapter)
-    }
-
-    private val observer = ApiObserver<News>(object :
-        ApiObserver.ChangeListener<News> {
-        override fun onSuccess(dataWrapper: News?) {
-            if (dataWrapper?.articles != null) {
-                hideWaitProgressDialog()
-                dataWrapper.articles.let { newsAdapter.setNewsList(it) }
-            } else {
-                showWaitProgressDialog(getString(R.string.loading))
-            }
-            binding.executePendingBindings()
-        }
-
-        override fun onException(exception: Exception?) {
-            if (exception is NoInternetConnectionException) {
-                exception.message?.let { showErrorDialog(it, true, R.string.disconnected) }
+    private fun observeViewModel() {
+        newsViewModel.response.observe(this) { res -> processResponse(res) }
+        newsViewModel.isDisconnected.observe(this) {
+            if(it) {
                 showDisconnectView()
             }
         }
+    }
 
-        override fun onDataLoad() {
-            showWaitProgressDialog()
+
+    private fun processResponse(response: Response<List<Article>>) {
+        when (response.status) {
+            Status.LOADING -> renderLoadingState()
+
+            Status.SUCCESS -> renderDataState(response.data)
+
+            Status.ERROR -> renderErrorState(response.errorMessage)
         }
-    })
+    }
+
+    private fun renderLoadingState() {
+        showWaitProgressDialog()
+    }
+
+    private fun renderDataState(sources: List<Article>?) {
+        hideWaitProgressDialog()
+        sources?.let { newsAdapter.setNewsList(it) }
+    }
+
+    private fun renderErrorState(errorMessage: String?) {
+        hideWaitProgressDialog()
+        errorMessage?.let { showErrorDialog(it, true, R.string.error) }
+    }
 
     override fun onRetry() {
-        showWaitProgressDialog()
-        newsViewModel.setNews(safeArgs.sourceId)
+        newsViewModel.response.observeOnlyOnce(this, Observer {
+            if (it.status == Status.ERROR) {
+                newsViewModel.loadNews(safeArgs.sourceId)
+            }
+        })
     }
 
     override fun onClick(article: Article) {

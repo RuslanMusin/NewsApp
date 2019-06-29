@@ -13,6 +13,7 @@ import com.itis.newsapp.presentation.base.BindingFragment
 import com.itis.newsapp.presentation.base.navigation.BottomNavOwner
 import com.itis.newsapp.util.ConnectionLiveData
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_indicators.*
 import javax.inject.Inject
 
 
@@ -24,9 +25,6 @@ class MainActivity :
 
     lateinit var host: NavHostFragment
 
-    @Inject
-    lateinit var connectionLiveData: ConnectionLiveData
-
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         host = supportFragmentManager
@@ -35,18 +33,6 @@ class MainActivity :
         setupBottomNavMenu(navController)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
-
-        connectionLiveData.observe(this, Observer {
-            if(it) {
-                Log.d("TAG", "hideDisView")
-                hideDisconnectView()
-                host.childFragmentManager.primaryNavigationFragment?.let {fragment->
-                    Log.d("TAG", "onRetry")
-                    (fragment as BaseFragment).onRetry()
-                }
-            }
-
-        })
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
@@ -63,31 +49,5 @@ class MainActivity :
 
     override fun getCurrentItemId(): Int {
         return bottom_nav_view.selectedItemId
-    }
-
-    override fun showWaitProgressDialog(message: String?) {
-        Log.d("TAG", "loading")
-        layout_wait.visibility = View.VISIBLE
-        layout_connectivity.visibility = View.GONE
-        lyaout_main.visibility = View.GONE
-    }
-
-    override fun hideWaitProgressDialog() {
-        Log.d("TAG", "hideLoading")
-        lyaout_main.visibility = View.VISIBLE
-        layout_wait.visibility = View.GONE
-        layout_connectivity.visibility = View.GONE
-    }
-
-    override fun showDisconnectView() {
-        layout_connectivity.visibility = View.VISIBLE
-        layout_wait.visibility = View.GONE
-        lyaout_main.visibility = View.GONE
-    }
-
-    override fun hideDisconnectView() {
-        lyaout_main.visibility = View.VISIBLE
-        layout_connectivity.visibility = View.GONE
-        layout_wait.visibility = View.GONE
     }
 }

@@ -22,8 +22,8 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
 
     override val layout: Int = R.layout.fragment_news_item
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var articleViewModel: NewsItemViewModel
 
     val safeArgs: NewsItemFragmentArgs by navArgs()

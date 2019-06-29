@@ -7,6 +7,7 @@ import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
 import com.itis.newsapp.presentation.ui.news.list.NewsListViewModel
 import com.itis.newsapp.presentation.ui.source.SourcesListViewModel
 import com.itis.newsapp.presentation.viewmodel.ViewModelFactory
+import com.itis.newsapp.presentation.viewmodel.connection.IndicatorViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +37,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChosenNewsViewModel::class)
     abstract fun bindChosenNewsViewModel(newsItemViewModel: ChosenNewsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(IndicatorViewModel::class)
+    abstract fun bindIndicatorViewModel(newsItemViewModel: IndicatorViewModel): ViewModel
 }

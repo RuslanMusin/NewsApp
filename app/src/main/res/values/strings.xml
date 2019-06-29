@@ -2,7 +2,6 @@
     <string name="app_name">NewsApp</string>
     <string name="news">Новости</string>
     <string name="chosen">Избранные</string>
-    <string name="error">Ошибка</string>
 
     <string name="ok">Ок</string>
     <string name="close">Закрыть</string>
@@ -29,5 +28,10 @@
     <string name="waiting">Пожалуйста подождите…</string>
     <string name="connection_reset">Ошибка подключения к серверу. Попробуйте переподключиться</string>
 
+    <string name="error">Ошибка</string>
+    <string name="error_unexpected">Неизвестная ошибка</string>
+    <string name="error_domain">Ошибка домена</string>
+    <string name="error_not_internet_connection">Отсутствует интернет соединение</string>
+    <string name="error_server">Ошибка сервера</string>
 
 </resources>

@@ -7,6 +7,7 @@ import com.itis.newsapp.data.network.pojo.response.DataWrapper
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.news.News
 import io.reactivex.Completable
+import io.reactivex.Single
 import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor() : NewsRepository {
@@ -16,9 +17,10 @@ class NewsRepositoryImpl @Inject constructor() : NewsRepository {
     @Inject
     lateinit var newsDao: NewsDao
 
-    override fun getNews(source: String): LiveData<DataWrapper<News>> {
+    override fun getArticles(source: String): Single<List<Article>> {
         return apiRequest
             .getNews(source)
+            .map { it.articles }
     }
 
     override fun insertArticle(article: Article): Completable {

@@ -5,10 +5,11 @@ import com.itis.newsapp.data.network.pojo.response.DataWrapper
 import com.itis.newsapp.data.network.pojo.response.news.Article
 import com.itis.newsapp.data.network.pojo.response.news.News
 import io.reactivex.Completable
+import io.reactivex.Single
 
 interface NewsRepository {
 
-    fun getNews(source: String): LiveData<DataWrapper<News>>
+    fun getArticles(source: String): Single<List<Article>>
 
     fun insertArticle(article: Article): Completable
 
