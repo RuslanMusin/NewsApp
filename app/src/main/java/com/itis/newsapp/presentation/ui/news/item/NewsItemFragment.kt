@@ -1,85 +1,72 @@
 package com.itis.newsapp.presentation.ui.news.item
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
+import androidx.navigation.fragment.navArgs
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
+import com.itis.newsapp.databinding.FragmentNewsItemBinding
+import com.itis.newsapp.presentation.base.fragment.BindingFragment
+import com.itis.newsapp.presentation.model.common.Response
+import com.itis.newsapp.presentation.model.common.Status
 import com.itis.newsapp.presentation.ui.news.list.NewsFragment
 import kotlinx.android.synthetic.main.fragment_news_item.*
-import javax.inject.Inject
 
-class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNewsItemBinding>(),
-    BackBtnVisibilityListener {
+class NewsItemFragment : BindingFragment<FragmentNewsItemBinding>() {
 
     companion object {
-        const val NEWS_ITEM_ARG: String = "news_item_arg"
-        const val SHOW_ADD_ARG: String = "show_add_arg"
-
         fun getInstance() = NewsFragment()
     }
 
     override val layout: Int = R.layout.fragment_news_item
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var sourceListViewModel: NewsItemViewModel
+    private lateinit var statesViewModel: NewsItemViewModel
+    private lateinit var articleSharedViewModel: ArticleSharedViewModel
 
-    lateinit var source: Article
+    val safeArgs: NewsItemFragmentArgs by navArgs()
+
+    lateinit var addBtn: MenuItem
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        setToolbarData()
+        setListeners()
+        setHasOptionsMenu(safeArgs.showAddBtn)
+        setViewModels()
+        bindModel()
+    }
+
+    private fun setToolbarData() {
         setToolbarTitle(R.string.news_item)
-        setVisibility(true)
+        setNavigationIconVisibility(true)
+    }
+
+    private fun setListeners() {
         li_content.setOnClickListener { showContent() }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        arguments?.let {
-            source = it.getSerializable(NewsItemFragment.NEWS_ITEM_ARG) as Article
-            sourceListViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
-            sourceListViewModel.setNews(source)
-            subscribeUi(sourceListViewModel.article)
-        }
+    private fun setViewModels() {
+        statesViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
+        statesViewModel.initState()
+        articleSharedViewModel = activity?.run {
+            ViewModelProviders.of(this, viewModelFactory)[ArticleSharedViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
     }
 
-    private fun subscribeUi(liveData: LiveData<Article>) {
-        // Update the list when the data changes
-        liveData.observe(this,
-            Observer<Article> { myProducts ->
-                if (myProducts != null) {
-//                    binding.setIsLoading(false)
-                    binding.article = myProducts
-                    hideWaitProgressDialog()
-                } else {
-                    showWaitProgressDialog()
-//                    binding.setIsLoading(true)
-                }
-                binding.executePendingBindings()
-            })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        arguments?.let {
-            val showAddBtn = it.getBoolean(SHOW_ADD_ARG)
-            Log.d("TAG", "showAddBtn = $showAddBtn")
-            setHasOptionsMenu(showAddBtn)
-        }
+    private fun bindModel() {
+        binding.itemId = getCurrentItemId()
+        binding.model = articleSharedViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
         inflater.inflate(R.menu.add_menu, menu)
+        addBtn = menu.findItem(R.id.add_article)
+        observeViewModel()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -90,11 +77,45 @@ class NewsItemFragment : BindingFragment<com.itis.newsapp.databinding.FragmentNe
     }
 
     private fun addArticle() {
-        sourceListViewModel.addArticle()
+        statesViewModel.setAddBtnClicked()
+        articleSharedViewModel.article.value?.get(getCurrentItemId())?.let {
+            statesViewModel.addArticle(it)
+        }
     }
 
-    override fun setVisibility(isVisible: Boolean) {
-        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
+    private fun observeViewModel() {
+        articleSharedViewModel.article.value?.get(getCurrentItemId())?.let {
+            statesViewModel.checkArticleExists(it)
+        }
+        statesViewModel.response.observe(this) { res -> processResponse(res)}
+        statesViewModel.isAddBtnClicked.observe(this) {
+            if(it) {
+                showInfoDialog(R.string.article_add_title, R.string.article_succes_added)
+            }
+        }
+    }
+
+    private fun processResponse(response: Response<Boolean>) {
+        when (response.status) {
+            Status.SUCCESS -> renderDataState(response.data)
+
+            Status.ERROR -> renderErrorState(response.errorMessage)
+
+            else -> {}
+        }
+    }
+
+    private fun renderDataState(isAdded: Boolean?) {
+        if (isAdded != null && isAdded) {
+            addBtn.setVisible(false)
+        } else {
+            addBtn.setVisible(true)
+        }
+    }
+
+    private fun renderErrorState(errorMessage: String?) {
+        hideWaitProgressDialog()
+        errorMessage?.let { showErrorDialog(it, true, R.string.error) }
     }
 
     fun showContent() {

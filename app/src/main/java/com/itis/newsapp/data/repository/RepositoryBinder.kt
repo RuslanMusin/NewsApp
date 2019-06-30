@@ -1,9 +1,9 @@
 package com.itis.newsapp.data.repository
 
-import com.itis.newsapp.data.repository.news.NewsRepository
 import com.itis.newsapp.data.repository.news.NewsRepositoryImpl
-import com.itis.newsapp.data.repository.source.SourceRepository
 import com.itis.newsapp.data.repository.source.SourceRepositoryImpl
+import com.itis.newsapp.domain.repository.NewsRepository
+import com.itis.newsapp.domain.repository.SourceRepository
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton

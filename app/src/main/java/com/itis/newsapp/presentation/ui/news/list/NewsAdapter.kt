@@ -7,52 +7,53 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.network.pojo.response.source.Source
 import com.itis.newsapp.databinding.ItemNewsBinding
-import com.itis.newsapp.presentation.ui.source.ProductViewHolder
-import com.itis.newsapp.presentation.ui.source.SourcesFragment
+import com.itis.newsapp.presentation.model.ArticleModel
 import java.util.*
 
 class NewsAdapter(
-    private val mProductClickCallback: NewsFragment.ProductClickCallback
+    private val itemClickListener: NewsItemClickListener
 ) : RecyclerView.Adapter<NewsViewHolder>() {
 
-    internal var mProductList: List<Article>? = null
+    internal var newsList: List<ArticleModel>? = null
 
     init {
         setHasStableIds(true)
     }
 
-    fun setNewsList(productList: List<Article>) {
-        if (mProductList == null) {
-            mProductList = productList
-            notifyItemRangeInserted(0, productList.size)
+    fun setNewsList(list: List<ArticleModel>) {
+        if (newsList == null) {
+            newsList = list
+            notifyItemRangeInserted(0, list.size)
         } else {
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 override fun getOldListSize(): Int {
-                    return mProductList!!.size
+                    return newsList!!.size
                 }
 
                 override fun getNewListSize(): Int {
-                    return productList.size
+                    return list.size
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return mProductList!![oldItemPosition].url === productList[newItemPosition].url
+                    return newsList!![oldItemPosition].url === list[newItemPosition].url
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    val newProduct = productList[newItemPosition]
-                    val oldProduct = mProductList!![oldItemPosition]
-                    return (newProduct.url === oldProduct.url
-                            && Objects.equals(newProduct.author, oldProduct.author)
-                            && Objects.equals(newProduct.description, oldProduct.description)
-                            && Objects.equals(newProduct.title, oldProduct.title)
+                    val newItem = list[newItemPosition]
+                    val oldItem = newsList!![oldItemPosition]
+                    return (newItem.url === oldItem.url
+                            && Objects.equals(newItem.author, oldItem.author)
+                            && Objects.equals(newItem.description, oldItem.description)
+                            && Objects.equals(newItem.title, oldItem.title)
+                            && Objects.equals(newItem.urlToImage, oldItem.urlToImage)
+                            && Objects.equals(newItem.content, oldItem.content)
+                            && Objects.equals(newItem.source, oldItem.source)
+                            && Objects.equals(newItem.publishedAt, oldItem.publishedAt)
                             )
                 }
             })
-            mProductList = productList
+            newsList = list
             result.dispatchUpdatesTo(this)
         }
     }
@@ -63,21 +64,21 @@ class NewsAdapter(
                 LayoutInflater.from(parent.context), R.layout.item_news,
                 parent, false
             ) as ItemNewsBinding
-        binding.setCallback(mProductClickCallback)
+        binding.setCallback(itemClickListener)
         return NewsViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        holder.binding.article = mProductList!![position]
+        holder.binding.article = newsList!![position]
         holder.binding.executePendingBindings()
     }
 
     override fun getItemCount(): Int {
-        return if (mProductList == null) 0 else mProductList!!.size
+        return if (newsList == null) 0 else newsList!!.size
     }
 
     override fun getItemId(position: Int): Long {
-        return mProductList!![position].url.hashCode().toLong()
+        return newsList!![position].url.hashCode().toLong()
     }
 }
 

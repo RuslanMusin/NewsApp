@@ -4,41 +4,41 @@ import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.itis.newsapp.R
-import com.itis.newsapp.presentation.base.BaseActivity
-import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
+import com.itis.newsapp.databinding.ActivityMainBinding
+import com.itis.newsapp.presentation.base.activity.BindingActivity
+import com.itis.newsapp.presentation.base.navigation.BottomNavOwner
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), BackBtnVisibilityListener {
 
-    override val layout: Int = R.layout.activity_main
+class MainActivity : BindingActivity<ActivityMainBinding>() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-       /* var userModel = UserModel()
-        userModel.uName = "Androidian"
-        userModel.pwd = "123456"
-        binding.userModel = userModel*/
+    override val layout: Int = com.itis.newsapp.R.layout.activity_main
 
-        val host: NavHostFragment = supportFragmentManager
-            .findFragmentById(R.id.host) as NavHostFragment? ?: return
+    lateinit var host: NavHostFragment
+
+    override fun onViewPrepare(savedInstanceState: Bundle?) {
+        super.onViewPrepare(savedInstanceState)
+        host = supportFragmentManager
+            .findFragmentById(com.itis.newsapp.R.id.host) as NavHostFragment? ?: return
         val navController = host.navController
         setupBottomNavMenu(navController)
-
+        setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
-        bottomNav?.setupWithNavController(navController)
+        bottom_nav_view.setupWithNavController(navController)
     }
 
-    override fun setVisibility(isVisible: Boolean) {
+    override fun setNavigationIconVisibility(isVisible: Boolean) {
         if(isVisible) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            toolbar.setNavigationIcon(com.itis.newsapp.R.drawable.ic_arrow_back_white_24dp)
         } else {
             toolbar.setNavigationIcon(null)
         }
+    }
+
+    override fun getCurrentItemId(): Int {
+        return bottom_nav_view.selectedItemId
     }
 }

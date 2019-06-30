@@ -2,51 +2,78 @@ package com.itis.newsapp.presentation.ui.news.item
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.itis.newsapp.data.db.NewsDao
-import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.data.repository.news.NewsRepository
+import com.itis.newsapp.domain.dto.input.ArticleInputMapper
+import com.itis.newsapp.domain.usecase.GetIsArticleSavedUseCase
+import com.itis.newsapp.domain.usecase.SaveArticleUseCase
+import com.itis.newsapp.presentation.base.viewmodel.RxViewModel
+import com.itis.newsapp.presentation.model.ArticleModel
+import com.itis.newsapp.presentation.model.common.Response
 import com.itis.newsapp.presentation.rx.transformer.PresentationCompletableTransformer
-import io.reactivex.disposables.CompositeDisposable
+import com.itis.newsapp.presentation.rx.transformer.PresentationSingleTransformer
+import com.itis.newsapp.presentation.util.exception.processor.ExceptionProcessor
 import javax.inject.Inject
 
-class NewsItemViewModel @Inject constructor(application: Application, val repository: NewsRepository) : AndroidViewModel(application) {
+class NewsItemViewModel
+    @Inject constructor(application: Application)
+    : RxViewModel(application)
+{
 
-    private val mObservableProducts: MediatorLiveData<Article>
+    @Inject
+    lateinit var getIsArticleSavedUseCase: GetIsArticleSavedUseCase
+    @Inject
+    lateinit var saveArticleSavedUseCase: SaveArticleUseCase
+    @Inject
+    lateinit var exceptionProcessor: ExceptionProcessor
 
-    private val disposable = CompositeDisposable()
+    private val _response = MutableLiveData<Response<Boolean>>()
+    val response: LiveData<Response<Boolean>> = _response
 
+    private val _isAddBtnClicked = MutableLiveData<Boolean>()
+    val isAddBtnClicked: LiveData<Boolean> = _isAddBtnClicked
 
-    val article: LiveData<Article>
-        get() = mObservableProducts
-
-    init {
-        mObservableProducts = MediatorLiveData<Article>()
-        // set by default null, until we get data from the database.
-        mObservableProducts.value = null
-
+    fun initState() {
+        _response.value = Response.success(true)
+        _isAddBtnClicked.value = false
     }
 
-    fun setNews(source: Article) {
-        val products = MutableLiveData<Article>()
-        products.value = source
-
-        // observe the changes of the articles from the database and forward them
-        mObservableProducts.addSource<Article>(products, mObservableProducts::setValue)
+    fun checkArticleExists(article: ArticleModel) {
+        getIsArticleSavedUseCase
+            .getIsArticleSavedSingle(article.url)
+            .compose(PresentationSingleTransformer())
+            .subscribe(
+                { response ->
+                    _response.value = Response.success(response)
+                },
+                { throwable ->
+                    _response.setValue(
+                        Response.error(exceptionProcessor.processException(throwable))
+                    )
+                }
+            ).disposeWhenDestroy()
     }
 
-    fun addArticle() {
-        article.value?.let {
-            disposable.add(
-                repository.insertArticle(it)
-                    .compose(PresentationCompletableTransformer())
-                    .subscribe({ Log.d("TAG", "insert article") },
-                        { error -> Log.e("TAG", "error insert article", error) })
+    fun addArticle(article: ArticleModel) {
+        saveArticleSavedUseCase
+            .getSaveArticleCompletable(
+                ArticleInputMapper.map(article)
             )
-        }
+            .compose(PresentationCompletableTransformer())
+            .subscribe(
+                {
+                    _response.setValue(Response.success(true))
+                },
+                { throwable ->
+                    _response.setValue(
+                        Response.error(exceptionProcessor.processException(throwable))
+                    )
+                }
+            ).disposeWhenDestroy()
     }
+
+    fun setAddBtnClicked() {
+        _isAddBtnClicked.value = true
+    }
+
 }

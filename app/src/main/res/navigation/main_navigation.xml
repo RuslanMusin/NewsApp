@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/main_navigation" app:startDestination="@id/sourcesFragment">
 
     <fragment android:id="@+id/chosenNewsFragment" android:name="com.itis.newsapp.presentation.ui.chosen.ChosenNewsFragment"
-              android:label="ChosenNewsFragment">
-        <action android:id="@+id/action_chosenNewsFragment_to_newsItemFragment" app:destination="@id/newsItemFragment"/>
+              android:label="ChosenNewsFragment"
+              tools:layout="@layout/fragment_news"
+    >
+        <action android:id="@+id/action_to_newsItemFragment" app:destination="@id/newsItemFragment">
+            <argument android:defaultValue="false" android:name="showAddBtn"/>
+        </action>
     </fragment>
     <fragment android:id="@+id/newsFragment" android:name="com.itis.newsapp.presentation.ui.news.list.NewsFragment"
-              android:label="NewsFragment">
-        <action android:id="@+id/action_newsFragment_to_newsItemFragment" app:destination="@id/newsItemFragment"/>
+              android:label="NewsFragment"
+              tools:layout="@layout/fragment_news"
+    >
+        <action android:id="@+id/action_newsFragment_to_newsItemFragment" app:destination="@id/newsItemFragment"
+        >
+            <argument android:defaultValue="true" android:name="showAddBtn"/>
+        </action>
+        <argument android:name="sourceId" app:argType="string" android:defaultValue='""'/>
     </fragment>
     <fragment android:id="@+id/newsItemFragment"
               android:name="com.itis.newsapp.presentation.ui.news.item.NewsItemFragment"
-              android:label="NewsItemFragment"/>
+              android:label="NewsItemFragment"
+              tools:layout="@layout/fragment_news_item"
+    >
+        <argument
+                android:name="showAddBtn"
+                app:argType="boolean"
+                android:defaultValue="true"/>
+    </fragment>
     <fragment android:id="@+id/sourcesFragment" android:name="com.itis.newsapp.presentation.ui.source.SourcesFragment"
-              android:label="SourcesFragment">
-        <action android:id="@+id/action_sourcesFragment_to_newsFragment" app:destination="@id/newsFragment"/>
+              android:label="SourcesFragment"
+              tools:layout="@layout/fragment_sources"
+    >
+        <action android:id="@+id/action_to_newsFragment" app:destination="@id/newsFragment">
+            <argument android:defaultValue='""' android:name="sourceId"/>
+        </action>
     </fragment>
 </navigation>

@@ -30,7 +30,7 @@ class ProgressDialog : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_progress, container, false)
+        return inflater.inflate(R.layout.layout_wait, container, true)
     }
 
 }

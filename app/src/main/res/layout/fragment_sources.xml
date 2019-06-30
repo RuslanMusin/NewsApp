@@ -3,16 +3,11 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-   <!-- <data>
-        <variable
-                name="isLoading"
-                type="boolean" />
-    </data>-->
-
     <data>
         <variable
-                name="userModel"
-                type="com.itis.newsapp.presentation.ui.activity.UserModel" />
+                name="indicatorModel"
+                type="com.itis.newsapp.presentation.base.viewmodel.IndicatorViewModel" />
+        <import type="android.view.View"/>
     </data>
 
     <LinearLayout
@@ -20,14 +15,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-        <TextView
-                android:id="@+id/loading_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="@string/loading"
-                android:textAlignment="center"
-                />
+        <include layout="@layout/layout_indicators"
+                 app:indicatorModel="@{indicatorModel}"
+        />
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/source_list"

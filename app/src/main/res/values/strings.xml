@@ -2,14 +2,13 @@
     <string name="app_name">NewsApp</string>
     <string name="news">Новости</string>
     <string name="chosen">Избранные</string>
-    <string name="error">Ошибка</string>
 
     <string name="ok">Ок</string>
     <string name="close">Закрыть</string>
     <string name="cancel">Отмена</string>
     <string name="source_name">Название источника</string>
     <string name="description">Описание</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка…</string>
     <string name="news_item_name">Название новости</string>
     <string name="author">Автор</string>
 
@@ -20,5 +19,20 @@
     <string name="published">Опубликовано</string>
     <string name="news_url">Ссылка на статью</string>
     <string name="content">Содержание статьи</string>
+    <string name="source">Источник</string>
+    <string name="newsUrl">Ссылка на статью</string>
+    <string name="article_add_title">Добавление статьи</string>
+    <string name="article_succes_added">Статья успешно добавлена в избранные</string>
+    <string name="disconnected">Отсутствует соединение</string>
+    <string name="you_disconnected">Попробуйте подсоединиться к сети</string>
+    <string name="waiting">Пожалуйста подождите…</string>
+    <string name="connection_reset">Ошибка подключения к серверу. Попробуйте переподключиться</string>
+
+    <string name="error">Ошибка</string>
+    <string name="error_unexpected">Неизвестная ошибка</string>
+    <string name="error_domain">Ошибка домена</string>
+    <string name="error_not_internet_connection">Отсутствует интернет соединение</string>
+    <string name="error_server">Ошибка сервера</string>
+    <string name="no_information">Информация не указана</string>
 
 </resources>

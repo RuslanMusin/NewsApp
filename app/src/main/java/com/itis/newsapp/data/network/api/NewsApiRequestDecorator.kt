@@ -1,6 +1,6 @@
 package com.itis.newsapp.data.network.api
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import com.itis.newsapp.data.network.exception.NoInternetConnectionException
 import com.itis.newsapp.data.network.exception.TimeOutException
 import com.itis.newsapp.data.network.exception.UnknownException
@@ -42,14 +42,17 @@ class NewsApiRequestDecorator(val apiRequest: NewsApiRequest) : NewsApiRequest {
         }
     }
 
-    override fun getSourcesSingle(): LiveData<ApiResponse<Sources>> {
+
+    override fun getSourcesSingle(): Single<Sources> {
         return apiRequest
             .getSourcesSingle()
+            .compose(ApiRequestErrorSingleTransformer())
     }
 
-    override fun getNews(sources: String): LiveData<ApiResponse<News>> {
+    override fun getNews(sources: String): Single<News> {
         return apiRequest
             .getNews(sources)
+            .compose(ApiRequestErrorSingleTransformer())
     }
 }
 

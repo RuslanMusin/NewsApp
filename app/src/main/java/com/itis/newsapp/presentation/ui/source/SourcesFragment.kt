@@ -2,87 +2,113 @@ package com.itis.newsapp.presentation.ui.source
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.base.navigation.BackBtnVisibilityListener
-import kotlinx.android.synthetic.main.fragment_sources.*
-import javax.inject.Inject
+import com.itis.newsapp.databinding.FragmentSourcesBinding
+import com.itis.newsapp.presentation.base.fragment.BindingFragment
+import com.itis.newsapp.presentation.model.SourceModel
+import com.itis.newsapp.presentation.model.common.Response
+import com.itis.newsapp.presentation.model.common.Status
+import com.itis.newsapp.util.observeOnlyOnce
 
-class SourcesFragment : BindingFragment<com.itis.newsapp.databinding.FragmentSourcesBinding>(),
-    BackBtnVisibilityListener {
+
+class SourcesFragment : BindingFragment<FragmentSourcesBinding>() {
 
     companion object {
-
-        const val SOURCE_ARG: String = "source_arg"
 
         fun getInstance() = SourcesFragment()
     }
 
     override val layout: Int = R.layout.fragment_sources
 
-    lateinit var mProductAdapter: SourceAdapter
+    lateinit var sourceAdapter: SourceAdapter
 
-//    lateinit var binding: DataFragmentBinding
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var sourceListViewModel: SourceListViewModel
+    private lateinit var sourceListViewModel: SourcesListViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
+        Log.d("TAG","prepare")
+        setToolbarData()
+        setViewModels()
+        observeViewModel()
+        bindModel()
+        sourceListViewModel.loadSources()
+    }
+
+    private fun setToolbarData() {
         setToolbarTitle(R.string.sources)
-        setVisibility(false)
-        mProductAdapter = SourceAdapter(mProductClickCallback);
-        binding.sourceList.setAdapter(mProductAdapter);
+        setNavigationIconVisibility(false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sourceListViewModel = ViewModelProviders.of(this, viewModelFactory)[SourceListViewModel::class.java]
-        subscribeUi(sourceListViewModel.sources)
+    private fun setViewModels() {
+        sourceListViewModel = ViewModelProviders.of(
+            this, viewModelFactory)[SourcesListViewModel::class.java]
+        sourceListViewModel.initState()
     }
 
-    private fun subscribeUi(liveData: LiveData<List<Source>>) {
-        // Update the list when the data changes
-        liveData.observe(this,
-            Observer<List<Source>> { myProducts ->
-                if (myProducts != null) {
-//                    binding.setIsLoading(false)
-                    hideWaitProgressDialog()
-                    loading_tv.visibility = View.GONE
-                    mProductAdapter.setSourceList(myProducts)
-                } else {
-                    showWaitProgressDialog(getString(R.string.loading))
-//                    binding.setIsLoading(true)
-                }
-                // espresso does not know how to wait for data binding's loop so we execute changes
-                // sync.
-                binding.executePendingBindings()
-            })
-    }
-
-    interface ProductClickCallback {
-        fun onClick(product: Source)
-    }
-
-
-    private val mProductClickCallback = object : ProductClickCallback {
-        override fun onClick(product: Source) {
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                Log.d("TAG", "clicked ${product.name}")
-                val args = Bundle()
-                args.putSerializable(SOURCE_ARG, product)
-                view?.let { Navigation.findNavController(it).navigate(R.id.action_sourcesFragment_to_newsFragment, args) }
-//                (activity as MainActivity).show(product)
+    private fun observeViewModel() {
+        sourceListViewModel.response.observe(this) { res -> processResponse(res)}
+        sourceListViewModel.isDisconnected.observe(this) {
+            if(it) {
+                showDisconnectView()
             }
         }
     }
 
-    override fun setVisibility(isVisible: Boolean) {
-        (activity as BackBtnVisibilityListener).setVisibility(isVisible)
+    private fun bindModel() {
+        binding.indicatorModel = indicatorViewModel
+        sourceAdapter = SourceAdapter(sourceClickCallback)
+        binding.sourceList.setAdapter(sourceAdapter)
     }
+
+    private fun processResponse(response: Response<List<SourceModel>>) {
+        when (response.status) {
+            Status.LOADING -> renderLoadingState()
+
+            Status.SUCCESS -> renderDataState(response.data)
+
+            Status.ERROR -> renderErrorState(response.errorMessage)
+        }
+    }
+
+    private fun renderLoadingState() {
+        showWaitProgressDialog()
+    }
+
+    private fun renderDataState(sources: List<SourceModel>?) {
+        hideWaitProgressDialog()
+        sources?.let { sourceAdapter.setSourceList(it) }
+    }
+
+    private fun renderErrorState(errorMessage: String?) {
+        hideWaitProgressDialog()
+        errorMessage?.let { showErrorDialog(it, true, R.string.error) }
+    }
+
+    override fun onRetry() {
+        sourceListViewModel.response.observeOnlyOnce(this, Observer {
+            if (it.status == Status.ERROR) {
+                sourceListViewModel.loadSources()
+            }
+        })
+    }
+
+    interface SourceClickCallback {
+        fun onClick(source: SourceModel)
+    }
+
+    private val sourceClickCallback = object : SourceClickCallback {
+        override fun onClick(source: SourceModel) {
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                val action: SourcesFragmentDirections.ActionToNewsFragment = SourcesFragmentDirections.actionToNewsFragment()
+                action.sourceId = source.id
+                view?.let { Navigation.findNavController(it).navigate(action) }
+            }
+        }
+    }
+
 }

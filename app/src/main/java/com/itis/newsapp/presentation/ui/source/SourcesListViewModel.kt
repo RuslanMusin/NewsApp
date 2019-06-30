@@ -1,29 +1,62 @@
 package com.itis.newsapp.presentation.ui.source
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.data.repository.source.SourceRepository
+import androidx.lifecycle.MutableLiveData
+import com.itis.newsapp.data.network.exception.NoInternetConnectionException
+import com.itis.newsapp.domain.usecase.LoadSourcesUseCase
+import com.itis.newsapp.presentation.base.viewmodel.RxViewModel
+import com.itis.newsapp.presentation.model.SourceModel
+import com.itis.newsapp.presentation.model.SourceModelMapper
+import com.itis.newsapp.presentation.model.common.Response
+import com.itis.newsapp.presentation.rx.transformer.PresentationSingleTransformer
+import com.itis.newsapp.presentation.util.exception.processor.ExceptionProcessor
 import javax.inject.Inject
 
-class SourceListViewModel @Inject constructor(application: Application, repository: SourceRepository) : AndroidViewModel(application) {
 
-    private val mObservableProducts: MediatorLiveData<List<Source>>
+class SourcesListViewModel
+    @Inject constructor(application: Application)
+    :RxViewModel(application)
+{
 
-    val sources: LiveData<List<Source>>
-        get() = mObservableProducts
+    val _response = MutableLiveData<Response<List<SourceModel>>>()
+    val response: LiveData<Response<List<SourceModel>>> = _response
 
-    init {
+    val _isDisconnected = MutableLiveData<Boolean>()
+    val isDisconnected: LiveData<Boolean> = _isDisconnected
 
-        mObservableProducts = MediatorLiveData<List<Source>>()
-        // set by default null, until we get data from the database.
-        mObservableProducts.value = null
+    @Inject
+    lateinit var loadSourcesUseCase: LoadSourcesUseCase
+    @Inject
+    lateinit var exceptionProcessor: ExceptionProcessor
 
-        val products = repository.getSources()
-
-        // observe the changes of the articles from the database and forward them
-        mObservableProducts.addSource<List<Source>>(products, mObservableProducts::setValue)
+    fun initState() {
+        _response.value = Response.loading()
+        _isDisconnected.value = false
     }
+
+    fun loadSources() {
+        loadSourcesUseCase
+            .getArticlesSingle()
+            .map { SourceModelMapper.map(it) }
+            .toList()
+            .compose(PresentationSingleTransformer())
+            .doOnSubscribe({ _response.setValue(Response.loading()) })
+            .subscribe(
+                { response ->
+                    _response.setValue(Response.success(response))
+                },
+                { throwable ->
+                    Log.d("TAG","eror = ${throwable.message}")
+                    if(throwable is NoInternetConnectionException) {
+                        _isDisconnected.value = true
+                    }
+                    _response.setValue(
+                        Response.error(exceptionProcessor.processException(throwable)))
+
+                }
+            ).disposeWhenDestroy()
+    }
+
 }
