@@ -7,47 +7,47 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.pojo.response.source.Source
+import com.itis.newsapp.presentation.model.SourceModel
 import java.util.*
 
 class SourceAdapter(
-    private val mSourceClickCallback: SourcesFragment.SourceClickCallback
+    private val clickCallback: SourcesFragment.SourceClickCallback
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
-    internal var mProductList: List<Source>? = null
+    internal var list: List<SourceModel>? = null
 
     init {
         setHasStableIds(true)
     }
 
-    fun setSourceList(productList: List<Source>) {
-        if (mProductList == null) {
-            mProductList = productList
-            notifyItemRangeInserted(0, productList.size)
+    fun setSourceList(sourceList: List<SourceModel>) {
+        if (list == null) {
+            list = sourceList
+            notifyItemRangeInserted(0, sourceList.size)
         } else {
             val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 override fun getOldListSize(): Int {
-                    return mProductList!!.size
+                    return list!!.size
                 }
 
                 override fun getNewListSize(): Int {
-                    return productList.size
+                    return sourceList.size
                 }
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return mProductList!![oldItemPosition].id === productList[newItemPosition].id
+                    return list!![oldItemPosition].id === sourceList[newItemPosition].id
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    val newProduct = productList[newItemPosition]
-                    val oldProduct = mProductList!![oldItemPosition]
-                    return (newProduct.id === oldProduct.id
-                            && Objects.equals(newProduct.description, oldProduct.description)
-                            && Objects.equals(newProduct.name, oldProduct.name)
+                    val newItem = sourceList[newItemPosition]
+                    val oldItem = list!![oldItemPosition]
+                    return (newItem.id === oldItem.id
+                            && Objects.equals(newItem.description, oldItem.description)
+                            && Objects.equals(newItem.name, oldItem.name)
                             )
                 }
             })
-            mProductList = productList
+            list = sourceList
             result.dispatchUpdatesTo(this)
         }
     }
@@ -58,21 +58,21 @@ class SourceAdapter(
                 LayoutInflater.from(parent.context), R.layout.item_source,
                 parent, false
             ) as com.itis.newsapp.databinding.ItemSourceBinding
-        binding.setCallback(mSourceClickCallback)
+        binding.setCallback(clickCallback)
         return ProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.binding.setSource(mProductList!![position])
+        holder.binding.setSource(list!![position])
         holder.binding.executePendingBindings()
     }
 
     override fun getItemCount(): Int {
-        return if (mProductList == null) 0 else mProductList!!.size
+        return if (list == null) 0 else list!!.size
     }
 
     override fun getItemId(position: Int): Long {
-        return mProductList!![position].id.hashCode().toLong()
+        return list!![position].id.hashCode().toLong()
     }
 }
 

@@ -6,7 +6,7 @@
     <data>
         <variable
                 name="indicatorModel"
-                type="com.itis.newsapp.presentation.viewmodel.connection.IndicatorViewModel" />
+                type="com.itis.newsapp.presentation.base.viewmodel.IndicatorViewModel" />
     </data>
 
     <LinearLayout

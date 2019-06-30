@@ -33,5 +33,6 @@
     <string name="error_domain">Ошибка домена</string>
     <string name="error_not_internet_connection">Отсутствует интернет соединение</string>
     <string name="error_server">Ошибка сервера</string>
+    <string name="no_information">Информация не указана</string>
 
 </resources>

@@ -1,7 +1,7 @@
 package com.itis.newsapp.presentation.ui.news.list
 
-import com.itis.newsapp.data.network.pojo.response.news.Article
+import com.itis.newsapp.presentation.model.ArticleModel
 
 interface NewsItemClickListener {
-    fun onClick(article: Article)
+    fun onClick(article: ArticleModel)
 }

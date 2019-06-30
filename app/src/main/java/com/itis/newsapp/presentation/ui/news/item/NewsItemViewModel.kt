@@ -2,71 +2,78 @@ package com.itis.newsapp.presentation.ui.news.item
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.repository.news.NewsRepository
+import com.itis.newsapp.domain.dto.input.ArticleInputMapper
+import com.itis.newsapp.domain.usecase.GetIsArticleSavedUseCase
+import com.itis.newsapp.domain.usecase.SaveArticleUseCase
+import com.itis.newsapp.presentation.base.viewmodel.RxViewModel
+import com.itis.newsapp.presentation.model.ArticleModel
+import com.itis.newsapp.presentation.model.common.Response
 import com.itis.newsapp.presentation.rx.transformer.PresentationCompletableTransformer
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import com.itis.newsapp.presentation.rx.transformer.PresentationSingleTransformer
+import com.itis.newsapp.presentation.util.exception.processor.ExceptionProcessor
 import javax.inject.Inject
 
 class NewsItemViewModel
-    @Inject constructor(application: Application, val repository: NewsRepository)
-    : AndroidViewModel(application) {
+    @Inject constructor(application: Application)
+    : RxViewModel(application)
+{
 
-    private val _article = MutableLiveData<MutableMap<Int, Article>>()
+    @Inject
+    lateinit var getIsArticleSavedUseCase: GetIsArticleSavedUseCase
+    @Inject
+    lateinit var saveArticleSavedUseCase: SaveArticleUseCase
+    @Inject
+    lateinit var exceptionProcessor: ExceptionProcessor
 
-    val article: LiveData<MutableMap<Int, Article>>
-        get() = _article
+    private val _response = MutableLiveData<Response<Boolean>>()
+    val response: LiveData<Response<Boolean>> = _response
 
-    private val _isAdded = MediatorLiveData<Boolean>()
+    private val _isAddBtnClicked = MutableLiveData<Boolean>()
+    val isAddBtnClicked: LiveData<Boolean> = _isAddBtnClicked
 
-    val isAdded: LiveData<Boolean>
-        get() = _isAdded
-
-    private val compositeDisposable = CompositeDisposable()
-
-    init {
-        _article.value = HashMap()
-        _isAdded.value = true
+    fun initState() {
+        _response.value = Response.success(true)
+        _isAddBtnClicked.value = false
     }
 
-    fun selectArticle(item: Article, menuItem: Int) {
-        _article.value?.set(menuItem, item)
-    }
-
-    fun checkArticleExists(menuItem: Int) {
-        article.value?.get(menuItem)?.let {
-            _isAdded.addSource(repository.getIsArticleSaved(it.url), _isAdded::setValue)
-        }
-    }
-
-    fun addArticle(menuItem: Int) {
-        article.value?.get(menuItem)?.let {
-            repository.insertArticle(it)
-            .compose(PresentationCompletableTransformer())
-            .doOnSubscribe {
-                _isAdded.value = false
-            }
-            .doAfterTerminate { _isAdded.value = true }
+    fun checkArticleExists(article: ArticleModel) {
+        getIsArticleSavedUseCase
+            .getIsArticleSavedSingle(article.url)
+            .compose(PresentationSingleTransformer())
             .subscribe(
-                { Log.d("TAG", "insert article") },
-                { error -> Log.e("TAG", "errorMessage insert article", error) }
+                { response ->
+                    _response.value = Response.success(response)
+                },
+                { throwable ->
+                    _response.setValue(
+                        Response.error(exceptionProcessor.processException(throwable))
+                    )
+                }
             ).disposeWhenDestroy()
-        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
+    fun addArticle(article: ArticleModel) {
+        saveArticleSavedUseCase
+            .getSaveArticleCompletable(
+                ArticleInputMapper.map(article)
+            )
+            .compose(PresentationCompletableTransformer())
+            .subscribe(
+                {
+                    _response.setValue(Response.success(true))
+                },
+                { throwable ->
+                    _response.setValue(
+                        Response.error(exceptionProcessor.processException(throwable))
+                    )
+                }
+            ).disposeWhenDestroy()
     }
 
-    fun Disposable.disposeWhenDestroy() {
-        compositeDisposable.add(this)
+    fun setAddBtnClicked() {
+        _isAddBtnClicked.value = true
     }
+
 }

@@ -2,29 +2,26 @@ package com.itis.newsapp.presentation.ui.source
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.itis.newsapp.data.network.exception.NoInternetConnectionException
-import com.itis.newsapp.data.network.pojo.response.DataWrapper
-import com.itis.newsapp.data.network.pojo.response.source.Source
-import com.itis.newsapp.data.network.pojo.response.source.Sources
 import com.itis.newsapp.domain.usecase.LoadSourcesUseCase
-import com.itis.newsapp.presentation.base.RxViewModel
-import javax.inject.Inject
-import retrofit2.adapter.rxjava2.Result.response
+import com.itis.newsapp.presentation.base.viewmodel.RxViewModel
+import com.itis.newsapp.presentation.model.SourceModel
+import com.itis.newsapp.presentation.model.SourceModelMapper
+import com.itis.newsapp.presentation.model.common.Response
 import com.itis.newsapp.presentation.rx.transformer.PresentationSingleTransformer
-import com.itis.newsapp.presentation.ui.model.Response
 import com.itis.newsapp.presentation.util.exception.processor.ExceptionProcessor
+import javax.inject.Inject
 
 
-class SourcesListViewModel @Inject
-constructor(application: Application) :
-RxViewModel(application) {
+class SourcesListViewModel
+    @Inject constructor(application: Application)
+    :RxViewModel(application)
+{
 
-    val _response = MutableLiveData<Response<List<Source>>>()
-    val response: LiveData<Response<List<Source>>> = _response
+    val _response = MutableLiveData<Response<List<SourceModel>>>()
+    val response: LiveData<Response<List<SourceModel>>> = _response
 
     val _isDisconnected = MutableLiveData<Boolean>()
     val isDisconnected: LiveData<Boolean> = _isDisconnected
@@ -34,7 +31,7 @@ RxViewModel(application) {
     @Inject
     lateinit var exceptionProcessor: ExceptionProcessor
 
-    init {
+    fun initState() {
         _response.value = Response.loading()
         _isDisconnected.value = false
     }
@@ -42,20 +39,22 @@ RxViewModel(application) {
     fun loadSources() {
         loadSourcesUseCase
             .getArticlesSingle()
+            .map { SourceModelMapper.map(it) }
+            .toList()
             .compose(PresentationSingleTransformer())
             .doOnSubscribe({ _response.setValue(Response.loading()) })
             .subscribe(
-                { greeting ->
-                    Log.d("TAG", "loaded")
-                    _response.setValue(Response.success(greeting))
+                { response ->
+                    _response.setValue(Response.success(response))
                 },
                 { throwable ->
-                    Log.d("TAG", "${throwable.message}")
+                    Log.d("TAG","eror = ${throwable.message}")
                     if(throwable is NoInternetConnectionException) {
                         _isDisconnected.value = true
                     }
                     _response.setValue(
                         Response.error(exceptionProcessor.processException(throwable)))
+
                 }
             ).disposeWhenDestroy()
     }

@@ -2,6 +2,7 @@ package com.itis.newsapp.data.db
 
 import android.app.Application
 import androidx.room.Room
+import com.itis.newsapp.data.db.dao.NewsDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

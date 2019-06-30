@@ -8,7 +8,7 @@
 
         <variable
                 name="model"
-                type="com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel" />
+                type="com.itis.newsapp.presentation.ui.news.item.ArticleSharedViewModel" />
 
         <variable
                 name="itemId"
@@ -16,7 +16,7 @@
 
         <variable
                 name="indicatorModel"
-                type="com.itis.newsapp.presentation.viewmodel.connection.IndicatorViewModel" />
+                type="com.itis.newsapp.presentation.base.viewmodel.IndicatorViewModel" />
 
     </data>
 
@@ -289,6 +289,7 @@
                     <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/small"
                     >
 
                         <RelativeLayout
@@ -317,14 +318,13 @@
                                 android:textColor="@color/primary_dark_text"
                                 android:text="@string/content"
                                 android:textSize="16sp"
+                                android:layout_marginBottom="@dimen/small"
                         />
 
                         <net.cachapa.expandablelayout.ExpandableLayout
                                 android:id="@+id/expandable_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/normal"
-                                android:layout_marginBottom="@dimen/normal"
                                 android:layout_below="@id/tv_content_name"
                                 app:el_duration="300"
                                 app:el_expanded="false"

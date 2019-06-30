@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="article"
-                  type="com.itis.newsapp.data.network.pojo.response.news.Article"/>
+                  type="com.itis.newsapp.presentation.model.ArticleModel"/>
         <variable name="callback"
                   type="com.itis.newsapp.presentation.ui.news.list.NewsItemClickListener"/>
     </data>

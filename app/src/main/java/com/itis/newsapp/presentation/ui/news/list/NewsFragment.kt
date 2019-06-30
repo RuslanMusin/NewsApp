@@ -3,25 +3,21 @@ package com.itis.newsapp.presentation.ui.news.list
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.itis.newsapp.R
-import com.itis.newsapp.data.network.exception.NoInternetConnectionException
-import com.itis.newsapp.data.network.pojo.response.news.Article
-import com.itis.newsapp.data.network.pojo.response.news.News
-import com.itis.newsapp.presentation.base.BindingFragment
-import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
-import com.itis.newsapp.data.network.callback.ApiObserver
-import com.itis.newsapp.presentation.ui.model.Response
-import com.itis.newsapp.presentation.ui.model.Status
+import com.itis.newsapp.databinding.FragmentNewsBinding
+import com.itis.newsapp.presentation.base.fragment.BindingFragment
+import com.itis.newsapp.presentation.model.ArticleModel
+import com.itis.newsapp.presentation.model.common.Response
+import com.itis.newsapp.presentation.model.common.Status
+import com.itis.newsapp.presentation.ui.news.item.ArticleSharedViewModel
 import com.itis.newsapp.util.observeOnlyOnce
-import javax.inject.Inject
 
 class NewsFragment :
-    BindingFragment<com.itis.newsapp.databinding.FragmentNewsBinding>(),
+    BindingFragment<FragmentNewsBinding>(),
     NewsItemClickListener
 {
 
@@ -36,29 +32,35 @@ class NewsFragment :
 
     val safeArgs: NewsFragmentArgs by navArgs()
 
-    /*@Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory*/
     private lateinit var newsViewModel: NewsListViewModel
-    private lateinit var newsItemViewModel: NewsItemViewModel
+    private lateinit var articleSharedViewModel: ArticleSharedViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
         setToolbarData()
-        newsViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsListViewModel::class.java]
-        newsItemViewModel = activity?.run {
-            ViewModelProviders.of(this, viewModelFactory)[NewsItemViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
+        setViewModels()
         observeViewModel()
-        binding.indicatorModel = indicatorViewModel
-        newsAdapter = NewsAdapter(this)
-        binding.newsList.setAdapter(newsAdapter)
+        bindModel()
         newsViewModel.loadNews(safeArgs.sourceId)
-
     }
 
     private fun setToolbarData() {
         setToolbarTitle(R.string.news)
         setNavigationIconVisibility(true)
+    }
+
+    private fun setViewModels() {
+        newsViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsListViewModel::class.java]
+        newsViewModel.initState()
+        articleSharedViewModel = activity?.run {
+            ViewModelProviders.of(this, viewModelFactory)[ArticleSharedViewModel::class.java]
+        } ?: throw Exception("Invalid Activity")
+    }
+
+    private fun bindModel() {
+        binding.indicatorModel = indicatorViewModel
+        newsAdapter = NewsAdapter(this)
+        binding.newsList.setAdapter(newsAdapter)
     }
 
     private fun observeViewModel() {
@@ -71,7 +73,7 @@ class NewsFragment :
     }
 
 
-    private fun processResponse(response: Response<List<Article>>) {
+    private fun processResponse(response: Response<List<ArticleModel>>) {
         when (response.status) {
             Status.LOADING -> renderLoadingState()
 
@@ -85,7 +87,7 @@ class NewsFragment :
         showWaitProgressDialog()
     }
 
-    private fun renderDataState(sources: List<Article>?) {
+    private fun renderDataState(sources: List<ArticleModel>?) {
         hideWaitProgressDialog()
         sources?.let { newsAdapter.setNewsList(it) }
     }
@@ -103,9 +105,9 @@ class NewsFragment :
         })
     }
 
-    override fun onClick(article: Article) {
+    override fun onClick(article: ArticleModel) {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            newsItemViewModel.selectArticle(article, getCurrentItemId())
+            articleSharedViewModel.selectArticle(article, getCurrentItemId())
             view?.let { Navigation.findNavController(it).navigate(R.id.action_newsFragment_to_newsItemFragment) }
         }
     }

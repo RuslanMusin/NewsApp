@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="source"
-                  type="com.itis.newsapp.data.network.pojo.response.source.Source"/>
+                  type="com.itis.newsapp.presentation.model.SourceModel"/>
         <variable name="callback"
                   type="com.itis.newsapp.presentation.ui.source.SourcesFragment.SourceClickCallback"/>
     </data>
@@ -51,7 +51,7 @@
                         android:maxLines="1"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/textSizeSmall"
-                        android:text="@={source.name}"
+                        android:text="@{source.name}"
                 />
 
             </LinearLayout>
@@ -80,7 +80,7 @@
                         android:layout_marginTop="@dimen/normal"
                         android:textColor="@color/secondary_text"
                         android:textSize="@dimen/textSizeSmall"
-                        android:text="@={source.description}"
+                        android:text="@{source.description}"
                 />
 
             </LinearLayout>

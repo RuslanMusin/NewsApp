@@ -4,11 +4,10 @@ import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.itis.newsapp.BuildConfig
-import com.itis.newsapp.data.network.adapter.LiveDataCallAdapterFactory
 import com.itis.newsapp.data.network.api.NewsApiRequest
 import com.itis.newsapp.data.network.api.NewsApiRequestDecorator
 import com.itis.newsapp.data.network.interceptor.ApiKeyInterceptor
-import com.itis.newsapp.util.ConnectionLiveData
+import com.itis.newsapp.presentation.base.databinding.livedata.ConnectionLiveData
 import com.itis.newsapp.util.Const.TIME_NETWORK_FORMAT
 import dagger.Module
 import dagger.Provides
@@ -22,10 +21,6 @@ import javax.inject.Singleton
 
 @Module
 class NetworkModule {
-
-    companion object {
-        private const val BASE_URL = "https://newsapi.org/v2/"
-    }
 
     @Singleton
     @Provides
