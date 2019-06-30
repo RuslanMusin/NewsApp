@@ -5,7 +5,7 @@
         <variable name="source"
                   type="com.itis.newsapp.presentation.model.SourceModel"/>
         <variable name="callback"
-                  type="com.itis.newsapp.presentation.ui.source.SourcesFragment.SourceClickCallback"/>
+                  type="com.itis.newsapp.presentation.ui.fragments.source.SourcesFragment.SourceClickCallback"/>
     </data>
 
     <androidx.cardview.widget.CardView

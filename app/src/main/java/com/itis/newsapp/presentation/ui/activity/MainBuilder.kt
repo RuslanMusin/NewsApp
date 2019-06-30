@@ -1,9 +1,9 @@
 package com.itis.newsapp.presentation.ui.activity
 
-import com.itis.newsapp.presentation.ui.chosen.ChosenNewsFragment
-import com.itis.newsapp.presentation.ui.news.item.NewsItemFragment
-import com.itis.newsapp.presentation.ui.news.list.NewsFragment
-import com.itis.newsapp.presentation.ui.source.SourcesFragment
+import com.itis.newsapp.presentation.ui.fragments.news.list.chosen.ChosenNewsFragment
+import com.itis.newsapp.presentation.ui.fragments.news.item.NewsItemFragment
+import com.itis.newsapp.presentation.ui.fragments.news.list.all.NewsFragment
+import com.itis.newsapp.presentation.ui.fragments.source.SourcesFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

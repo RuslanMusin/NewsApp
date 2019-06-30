@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.news.item
+package com.itis.newsapp.presentation.ui.fragments.news.item
 
 import android.os.Bundle
 import android.view.Menu
@@ -12,7 +12,8 @@ import com.itis.newsapp.databinding.FragmentNewsItemBinding
 import com.itis.newsapp.presentation.base.fragment.BindingFragment
 import com.itis.newsapp.presentation.model.common.Response
 import com.itis.newsapp.presentation.model.common.Status
-import com.itis.newsapp.presentation.ui.news.list.NewsFragment
+import com.itis.newsapp.presentation.ui.fragments.news.ArticleSharedViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.list.all.NewsFragment
 import kotlinx.android.synthetic.main.fragment_news_item.*
 
 class NewsItemFragment : BindingFragment<FragmentNewsItemBinding>() {

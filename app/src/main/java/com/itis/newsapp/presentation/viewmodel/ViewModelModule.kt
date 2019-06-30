@@ -2,11 +2,11 @@ package com.itis.newsapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.itis.newsapp.presentation.ui.chosen.ChosenNewsViewModel
-import com.itis.newsapp.presentation.ui.news.item.ArticleSharedViewModel
-import com.itis.newsapp.presentation.ui.news.item.NewsItemViewModel
-import com.itis.newsapp.presentation.ui.news.list.NewsListViewModel
-import com.itis.newsapp.presentation.ui.source.SourcesListViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.list.chosen.ChosenNewsViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.ArticleSharedViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.item.NewsItemViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.list.all.NewsListViewModel
+import com.itis.newsapp.presentation.ui.fragments.source.SourcesListViewModel
 import com.itis.newsapp.presentation.base.viewmodel.IndicatorViewModel
 import dagger.Binds
 import dagger.Module

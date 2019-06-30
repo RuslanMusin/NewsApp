@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.source
+package com.itis.newsapp.presentation.ui.fragments.source
 
 import android.app.Application
 import android.util.Log
@@ -48,7 +48,6 @@ class SourcesListViewModel
                     _response.setValue(Response.success(response))
                 },
                 { throwable ->
-                    Log.d("TAG","eror = ${throwable.message}")
                     if(throwable is NoInternetConnectionException) {
                         _isDisconnected.value = true
                     }

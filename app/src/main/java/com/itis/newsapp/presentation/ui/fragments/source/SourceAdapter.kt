@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.source
+package com.itis.newsapp.presentation.ui.fragments.source
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

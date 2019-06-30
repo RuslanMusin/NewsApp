@@ -9,7 +9,6 @@ class GetIsArticleSavedUseCase @Inject
 constructor(private val newsRepository: NewsRepository) {
 
     fun getIsArticleSavedSingle(url: String): Single<Boolean> {
-        Log.d("TAG", "getSaved")
         return newsRepository.getIsArticleSaved(url)
     }
 }

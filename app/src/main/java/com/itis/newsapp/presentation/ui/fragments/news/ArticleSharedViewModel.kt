@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.news.item
+package com.itis.newsapp.presentation.ui.fragments.news
 
 import android.app.Application
 import androidx.lifecycle.LiveData
