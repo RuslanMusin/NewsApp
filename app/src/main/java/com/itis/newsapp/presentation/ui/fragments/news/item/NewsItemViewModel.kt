@@ -1,7 +1,6 @@
-package com.itis.newsapp.presentation.ui.news.item
+package com.itis.newsapp.presentation.ui.fragments.news.item
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.itis.newsapp.domain.dto.input.ArticleInputMapper

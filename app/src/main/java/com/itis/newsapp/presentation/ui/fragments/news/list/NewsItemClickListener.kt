@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.news.list
+package com.itis.newsapp.presentation.ui.fragments.news.list
 
 import com.itis.newsapp.presentation.model.ArticleModel
 

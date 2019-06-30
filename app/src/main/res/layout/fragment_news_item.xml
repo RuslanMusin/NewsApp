@@ -8,7 +8,7 @@
 
         <variable
                 name="model"
-                type="com.itis.newsapp.presentation.ui.news.item.ArticleSharedViewModel" />
+                type="com.itis.newsapp.presentation.ui.fragments.news.ArticleSharedViewModel" />
 
         <variable
                 name="itemId"

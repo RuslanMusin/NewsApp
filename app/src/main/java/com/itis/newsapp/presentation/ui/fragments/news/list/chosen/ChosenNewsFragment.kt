@@ -1,38 +1,38 @@
-package com.itis.newsapp.presentation.ui.news.list
+package com.itis.newsapp.presentation.ui.fragments.news.list.chosen
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.observe
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.navArgs
 import com.itis.newsapp.R
 import com.itis.newsapp.databinding.FragmentNewsBinding
 import com.itis.newsapp.presentation.base.fragment.BindingFragment
 import com.itis.newsapp.presentation.model.ArticleModel
 import com.itis.newsapp.presentation.model.common.Response
 import com.itis.newsapp.presentation.model.common.Status
-import com.itis.newsapp.presentation.ui.news.item.ArticleSharedViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.ArticleSharedViewModel
+import com.itis.newsapp.presentation.ui.fragments.news.list.NewsAdapter
+import com.itis.newsapp.presentation.ui.fragments.news.list.NewsItemClickListener
 import com.itis.newsapp.util.observeOnlyOnce
 
-class NewsFragment :
+class ChosenNewsFragment :
     BindingFragment<FragmentNewsBinding>(),
     NewsItemClickListener
 {
 
     companion object {
 
-        fun getInstance() = NewsFragment()
+        fun getInstance() = ChosenNewsFragment()
     }
 
     override val layout: Int = R.layout.fragment_news
 
-    lateinit var newsAdapter: NewsAdapter
+    lateinit var chosenNewsAdapter: NewsAdapter
 
-    val safeArgs: NewsFragmentArgs by navArgs()
-
-    private lateinit var newsViewModel: NewsListViewModel
+    private lateinit var chosenNewsViewModel: ChosenNewsViewModel
     private lateinit var articleSharedViewModel: ArticleSharedViewModel
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
@@ -41,37 +41,35 @@ class NewsFragment :
         setViewModels()
         observeViewModel()
         bindModel()
-        newsViewModel.loadNews(safeArgs.sourceId)
     }
 
     private fun setToolbarData() {
-        setToolbarTitle(R.string.news)
-        setNavigationIconVisibility(true)
+        setToolbarTitle(R.string.chosen_news)
+        setNavigationIconVisibility(false)
     }
 
     private fun setViewModels() {
-        newsViewModel = ViewModelProviders.of(this, viewModelFactory)[NewsListViewModel::class.java]
-        newsViewModel.initState()
+        chosenNewsViewModel = ViewModelProviders.of(this, viewModelFactory)[ChosenNewsViewModel::class.java]
         articleSharedViewModel = activity?.run {
             ViewModelProviders.of(this, viewModelFactory)[ArticleSharedViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
     }
 
-    private fun bindModel() {
-        binding.indicatorModel = indicatorViewModel
-        newsAdapter = NewsAdapter(this)
-        binding.newsList.setAdapter(newsAdapter)
-    }
-
     private fun observeViewModel() {
-        newsViewModel.response.observe(this) { res -> processResponse(res) }
-        newsViewModel.isDisconnected.observe(this) {
+        chosenNewsViewModel.response.observe(this) { res -> processResponse(res)}
+        chosenNewsViewModel.isDisconnected.observe(this) {
             if(it) {
                 showDisconnectView()
             }
         }
     }
 
+    private fun bindModel() {
+        binding.indicatorModel = indicatorViewModel
+        chosenNewsAdapter = NewsAdapter(this)
+        binding.newsList.setAdapter(chosenNewsAdapter)
+        chosenNewsViewModel.loadChosenArticles()
+    }
 
     private fun processResponse(response: Response<List<ArticleModel>>) {
         when (response.status) {
@@ -88,8 +86,9 @@ class NewsFragment :
     }
 
     private fun renderDataState(sources: List<ArticleModel>?) {
+        Log.d("TAG","update")
         hideWaitProgressDialog()
-        sources?.let { newsAdapter.setNewsList(it) }
+        sources?.let { chosenNewsAdapter.setNewsList(it) }
     }
 
     private fun renderErrorState(errorMessage: String?) {
@@ -98,9 +97,9 @@ class NewsFragment :
     }
 
     override fun onRetry() {
-        newsViewModel.response.observeOnlyOnce(this, Observer {
+        chosenNewsViewModel.response.observeOnlyOnce(this, Observer {
             if (it.status == Status.ERROR) {
-                newsViewModel.loadNews(safeArgs.sourceId)
+                chosenNewsViewModel.loadChosenArticles()
             }
         })
     }
@@ -108,7 +107,7 @@ class NewsFragment :
     override fun onClick(article: ArticleModel) {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             articleSharedViewModel.selectArticle(article, getCurrentItemId())
-            view?.let { Navigation.findNavController(it).navigate(R.id.action_newsFragment_to_newsItemFragment) }
+            view?.let { Navigation.findNavController(it).navigate(R.id.action_to_newsItemFragment) }
         }
     }
 

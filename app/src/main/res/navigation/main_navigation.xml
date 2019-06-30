@@ -3,7 +3,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/main_navigation" app:startDestination="@id/sourcesFragment">
 
-    <fragment android:id="@+id/chosenNewsFragment" android:name="com.itis.newsapp.presentation.ui.chosen.ChosenNewsFragment"
+    <fragment android:id="@+id/chosenNewsFragment" android:name="com.itis.newsapp.presentation.ui.fragments.news.list.chosen.ChosenNewsFragment"
               android:label="ChosenNewsFragment"
               tools:layout="@layout/fragment_news"
     >
@@ -11,7 +11,7 @@
             <argument android:defaultValue="false" android:name="showAddBtn"/>
         </action>
     </fragment>
-    <fragment android:id="@+id/newsFragment" android:name="com.itis.newsapp.presentation.ui.news.list.NewsFragment"
+    <fragment android:id="@+id/newsFragment" android:name="com.itis.newsapp.presentation.ui.fragments.news.list.all.NewsFragment"
               android:label="NewsFragment"
               tools:layout="@layout/fragment_news"
     >
@@ -22,7 +22,7 @@
         <argument android:name="sourceId" app:argType="string" android:defaultValue='""'/>
     </fragment>
     <fragment android:id="@+id/newsItemFragment"
-              android:name="com.itis.newsapp.presentation.ui.news.item.NewsItemFragment"
+              android:name="com.itis.newsapp.presentation.ui.fragments.news.item.NewsItemFragment"
               android:label="NewsItemFragment"
               tools:layout="@layout/fragment_news_item"
     >
@@ -31,7 +31,7 @@
                 app:argType="boolean"
                 android:defaultValue="true"/>
     </fragment>
-    <fragment android:id="@+id/sourcesFragment" android:name="com.itis.newsapp.presentation.ui.source.SourcesFragment"
+    <fragment android:id="@+id/sourcesFragment" android:name="com.itis.newsapp.presentation.ui.fragments.source.SourcesFragment"
               android:label="SourcesFragment"
               tools:layout="@layout/fragment_sources"
     >

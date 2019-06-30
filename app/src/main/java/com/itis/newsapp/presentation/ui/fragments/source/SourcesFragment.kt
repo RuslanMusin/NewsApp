@@ -1,4 +1,4 @@
-package com.itis.newsapp.presentation.ui.source
+package com.itis.newsapp.presentation.ui.fragments.source
 
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +31,6 @@ class SourcesFragment : BindingFragment<FragmentSourcesBinding>() {
 
     override fun onViewPrepare(savedInstanceState: Bundle?) {
         super.onViewPrepare(savedInstanceState)
-        Log.d("TAG","prepare")
         setToolbarData()
         setViewModels()
         observeViewModel()

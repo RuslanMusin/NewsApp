@@ -1,7 +1,6 @@
-package com.itis.newsapp.presentation.ui.chosen
+package com.itis.newsapp.presentation.ui.fragments.news.list.chosen
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.itis.newsapp.data.network.exception.NoInternetConnectionException
